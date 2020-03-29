@@ -13,8 +13,8 @@ public class ScoreManager : MonoBehaviour
     long megScore;
     public enum MegType {Clean, FewTouches, ManyTouches};
     int pointsPerMeg = 20;
-    float fewTouchReduction = 0.75f;
-    float manyTouchesReduction = 0.5f;
+    public float fewTouchReduction = 0.75f;
+    public float manyTouchesReduction = 0.5f;
     public float bonusAmount = 2;
 
     private void Update()
@@ -24,10 +24,12 @@ public class ScoreManager : MonoBehaviour
 
     public void UpdateScore(MegType megType, int numOfMegs)
     {
+        Debug.Log("Num of megs: " + numOfMegs);
         if (megType == MegType.Clean)
         {
-            megScore += Mathf.CeilToInt(pointsPerMeg * ((numOfMegs - 1) * bonusAmount));
-        } else if (megType == MegType.FewTouches)
+            megScore += (long) (pointsPerMeg * ((numOfMegs - 1 > 0) ? ((numOfMegs - 1) * bonusAmount) : 1));
+        }
+        else if (megType == MegType.FewTouches)
         {
             megScore += Mathf.CeilToInt(pointsPerMeg * fewTouchReduction);
         }
@@ -35,8 +37,8 @@ public class ScoreManager : MonoBehaviour
         {
             megScore += Mathf.CeilToInt(pointsPerMeg * manyTouchesReduction);
         }
+        //megScore += pointsPerMeg;
         scoreText.text = "Score: " + megScore;
-        Debug.Log("Points: " + megScore);
     }
 
 }

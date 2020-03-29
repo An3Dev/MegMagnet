@@ -7,7 +7,8 @@ public class MoveLegs : MonoBehaviour
 
     public float speed;
     public Rigidbody rb;
-    public Vector3 startingPosition;
+    Vector3 startingPosition;
+    public BoxCollider megTrigger;
 
     Camera mainCamera;
 
@@ -19,19 +20,21 @@ public class MoveLegs : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+        
     }
 
     private void LateUpdate()
     {
-        Vector2 viewportPoint = mainCamera.WorldToViewportPoint(transform.position);
+        //Vector2 viewportPoint = mainCamera.WorldToViewportPoint(transform.position);
         // if object is outside of the camera view.
-        if (viewportPoint.x > 1.1f 
-            || viewportPoint.x < -1.1f
-                || viewportPoint.y > 1.1f
-                    || viewportPoint.y < -1.1f)
-        {
-            transform.position = startingPosition;
-        }
+        //if (viewportPoint.x > 1.1f 
+        //    || viewportPoint.x < -1.1f
+        //        || viewportPoint.y > 1.1f
+        //            || viewportPoint.y < -1.1f)
+        //{
+        //    megTrigger.enabled = true;
+        //    transform.position = startingPosition;
+        //}
     }
 
     private void FixedUpdate()
