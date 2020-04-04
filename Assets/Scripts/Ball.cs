@@ -14,6 +14,8 @@ public class Ball : MonoBehaviour
     Material material;
     Color colorOfBall;
 
+    bool megEnterTriggered = false;
+
     public float fadeDuration;
     private void Start()
     {
@@ -46,7 +48,7 @@ public class Ball : MonoBehaviour
     {
         Debug.Log(other.tag);
         // if had contact with meg trigger
-        if (other.CompareTag("MegTrigger"))
+        if (other.CompareTag("MegTrigger") && !megEnterTriggered)
         {
             numOfMegs++;
 
@@ -71,6 +73,10 @@ public class Ball : MonoBehaviour
             // Disable the meg collider
             //other.GetComponent<BoxCollider>().enabled = false;
             numOfCollisions = 0;
+        } else if (other.CompareTag("MegStart"))
+        {
+            megEnterTriggered = true;
+
         }
     }
 

@@ -33,7 +33,7 @@ public class LegSpawner : MonoBehaviour
                 spawner.position.x + positionStandardDeviation), spawner.position.y, 
                     spawner.position.z);
 
-            GameObject leg = Instantiate(legPrefab, position, Quaternion.identity);
+            GameObject leg = Instantiate(legPrefab, position, spawner.rotation);
             Destroy(leg, 10);
             Debug.Log("Spawn");
             lastSpawnTime = Time.time;
