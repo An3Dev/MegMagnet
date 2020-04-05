@@ -15,6 +15,7 @@ public class LegSpawner : MonoBehaviour
 
     float lastSpawnTime;
 
+    int clones;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,9 +35,10 @@ public class LegSpawner : MonoBehaviour
                     spawner.position.z);
 
             GameObject leg = Instantiate(legPrefab, position, spawner.rotation);
+            leg.name = clones.ToString();
             Destroy(leg, 10);
-            Debug.Log("Spawn");
             lastSpawnTime = Time.time;
+            clones++;
         }
     }
 }
