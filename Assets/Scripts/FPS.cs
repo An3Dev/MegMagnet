@@ -10,12 +10,12 @@ public class FPS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 500;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Application.targetFrameRate = 120;
         text.text = (1 / Time.deltaTime).ToString("0");
     }
 }

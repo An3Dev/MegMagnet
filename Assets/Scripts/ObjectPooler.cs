@@ -29,6 +29,7 @@ public class ObjectPooler : MonoBehaviour
             GameObject ball = spawnedBallsList[i];
             if (!ball.activeInHierarchy)
             {
+                ball.GetComponent<Ball>().PrepareForSpawn();
                 ball.SetActive(true);
                 return ball;
             }

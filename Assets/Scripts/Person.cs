@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveLegs : MonoBehaviour
+public class Person : MonoBehaviour
 {
 
     public float speed;
@@ -12,6 +12,8 @@ public class MoveLegs : MonoBehaviour
 
     Camera mainCamera;
 
+    public Person Instance;
+
     private void Awake()
     {
         startingPosition = transform.position;
@@ -20,8 +22,34 @@ public class MoveLegs : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        
+        Instance = this;
+        EnableRagdoll(false, transform);
     }
+
+    public void EnableRagdoll(bool enable, Transform parent)
+    {
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            
+
+            if (child.GetComponent<Rigidbody>() != null)
+            {
+                Rigidbody childRb = child.GetComponent<Rigidbody>();
+                childRb.isKinematic = !enable;
+                childRb.useGravity = enable;
+            }
+
+            
+
+            if (child.childCount != 0)
+            {
+                EnableRagdoll(enable, child);
+            }
+        }
+    }
+
+
 
     private void LateUpdate()
     {

@@ -23,9 +23,21 @@ public class ShootBall : MonoBehaviour
     public LayerMask aimableLayer;
 
     float ballLimitTimer = 1;
+
+    Vector3 firstTouchPos;
+
+    float maxDistForSwipe = 500;
+
+    float minDistForSwipe = 10;
+
+    public AnimationCurve forceCurve;
+
     // Start is called before the first frame update
     void Start()
     {
+        maxDistForSwipe = (Screen.height / 4) * 3;
+        minDistForSwipe = Screen.height / 20;
+
         PlaceBall();
     }
 
@@ -37,7 +49,7 @@ public class ShootBall : MonoBehaviour
             ballLimitTimer -= Time.deltaTime;
             if (ballLimitTimer <= 0)
             {
-                placedBall.transform.position = Vector3.Lerp(placedBall.transform.position, placementPoint.position, 1 / Time.deltaTime);
+                placedBall.transform.position = Vector3.Lerp(placedBall.transform.position, placementPoint.position, (1 / Time.deltaTime) * Time.deltaTime);
             }
             // if the ball is close enough to the placement position, teleport it to the right place
             if (placedBall.transform.position.z >= placementPoint.position.z)
@@ -66,11 +78,19 @@ public class ShootBall : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             firstTouchTime = Time.timeSinceLevelLoad;
+            firstTouchPos = Input.mousePosition;
         }
 
         // If click released, shoot ball 
         if (Input.GetMouseButtonUp(0) && ballIsReady)
         {
+            float swipeDist = (Input.mousePosition - firstTouchPos).magnitude;
+
+            // if swipe is too short, return
+            if (swipeDist < minDistForSwipe)
+            {
+                return;
+            }
             RaycastHit hit = new RaycastHit();
 
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -89,15 +109,22 @@ public class ShootBall : MonoBehaviour
 
             ballRb = placedBall.GetComponent<Rigidbody>();
 
-            float normalizedForce = 1 - (Time.timeSinceLevelLoad - firstTouchTime);
+            float normalizedDist = swipeDist / maxDistForSwipe;
+            Debug.Log(normalizedDist);
+            normalizedDist = Mathf.Clamp(normalizedDist, 0.01f, 0.9f);
 
-            normalizedForce = Mathf.Clamp(normalizedForce, 0.5f, 1);
+            normalizedDist = forceCurve.Evaluate(normalizedDist);
+
+            float normalizedTime = (1 - (Time.timeSinceLevelLoad - firstTouchTime)) * 0.1f;
+            normalizedTime = Mathf.Clamp(normalizedTime, 0.01f, 0.2f);
+
+            float normalizedForce = normalizedTime + normalizedDist;
 
             Vector3 force = ballDirection * maxBallSpeed * normalizedForce;
 
-     
+            ballRb.AddForce(force, ForceMode.VelocityChange);
 
-            ballRb.AddForce(force);
+            ballRb.GetComponent<Ball>().Instance.WasKicked();
 
             firstTouchTime = -1;
             // Get another ball ready
@@ -109,7 +136,11 @@ public class ShootBall : MonoBehaviour
     void PlaceBall() {
 
         placedBall = ObjectPooler.Instance.EnableBall();
+        Rigidbody rb = placedBall.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.Sleep();
         placedBall.transform.position = startPoint.position;
-        placedBall.GetComponent<Rigidbody>().AddForce(-(placedBall.transform.position - placementPoint.position).normalized * placementForce, ForceMode.Impulse);
+        placedBall.GetComponent<Rigidbody>().AddForce(-(placedBall.transform.position - placementPoint.position).normalized * placementForce, ForceMode.VelocityChange);
     }
 }

@@ -17,28 +17,64 @@ public class ScoreManager : MonoBehaviour
     public float manyTouchesReduction = 0.5f;
     public float bonusAmount = 2;
 
+    public GameObject floatingTextPrefab;
+
+    public static ScoreManager Instance;
+
+    public Transform canvas;
+
+    void Start()
+    {
+        Instance = this;
+        canvas = GameObject.Find("Canvas").transform;
+    }
     private void Update()
     {
         Time.timeScale = timeScale;
+
     }
 
-    public void UpdateScore(MegType megType, int numOfMegs)
+
+    public void UpdateScore(MegType megType, int numOfMegs, Vector3 ballPos)
     {
+        long valueAdded = 0;
+
         Debug.Log("Num of megs: " + numOfMegs);
         if (megType == MegType.Clean)
         {
-            megScore += (long) (pointsPerMeg * ((numOfMegs - 1 > 0) ? ((numOfMegs - 1) * bonusAmount) : 1));
+            valueAdded = (long)(pointsPerMeg * ((numOfMegs - 1 > 0) ? ((numOfMegs - 1) * bonusAmount) : 1));
         }
         else if (megType == MegType.FewTouches)
         {
-            megScore += Mathf.CeilToInt(pointsPerMeg * fewTouchReduction);
+            valueAdded = Mathf.CeilToInt(pointsPerMeg * fewTouchReduction);
         }
         else if (megType == MegType.ManyTouches)
         {
-            megScore += Mathf.CeilToInt(pointsPerMeg * manyTouchesReduction);
+            valueAdded = Mathf.CeilToInt(pointsPerMeg * manyTouchesReduction);
         }
+
+        megScore += valueAdded;
+        ShowFloatingText(ballPos, valueAdded);
+
         //megScore += pointsPerMeg;
         scoreText.text = "Score: " + megScore;
+        Debug.Log("Score: " + megScore);
+    }
+
+
+    void ShowFloatingText(Vector3 ballPos, float pointsAdded)
+    {
+        float textSize = 1 - ((Camera.main.transform.position - ballPos).magnitude / 10);
+
+        textSize = Mathf.Clamp(textSize, 0.7f, 1f);
+        Vector3 spawnPos = Camera.main.WorldToScreenPoint(ballPos + Vector3.right / 8); 
+
+        GameObject text = Instantiate(floatingTextPrefab, spawnPos , Quaternion.identity, canvas);
+
+        text.transform.localScale = new Vector3(textSize, textSize, 1);
+
+        text.GetComponentInChildren<TextMeshProUGUI>().text = "+" + pointsAdded.ToString();
+        Destroy(text, 5);
     }
 
 }
