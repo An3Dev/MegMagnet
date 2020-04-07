@@ -37,6 +37,7 @@ public class Ball : MonoBehaviour
     bool isPersonFacingRight;
     bool wasExactlyBetweenLegs;
 
+    public GameObject trail;
     void Awake()
     {
         startScale = transform.localScale;
@@ -55,6 +56,7 @@ public class Ball : MonoBehaviour
 
     public void PrepareForSpawn()
     {
+
         transform.localScale = startScale;
         numOfMegs = 0;
     }
@@ -115,15 +117,20 @@ public class Ball : MonoBehaviour
                 Vector3 rightFootPos = rightFoot.position;
                 Vector3 leftFootPos = leftFoot.position;
                 
-                // If this is true, it means a meg happened
+                // If this is true, the ball is past the exit foot
                 if (isMegExitOnFarSideOfPlayer && isPersonFacingRight && ballPos.z >= leftFootPos.z
                      || !isMegExitOnFarSideOfPlayer && isPersonFacingRight && ballPos.z <= rightFootPos.z
                      || isMegExitOnFarSideOfPlayer && !isPersonFacingRight && ballPos.z >= rightFootPos.z
                      || !isMegExitOnFarSideOfPlayer && !isPersonFacingRight && ballPos.z <= leftFootPos.z)
                 {
-                    Debug.Log("Meg!");
-                    HandleMeg();
-                    isCheckingForMeg = false;
+                    // if the ball is within the feet on the x axis
+                    if (ballPos.x < rightFootPos.x && ballPos.x > leftFootPos.x ||
+                        ballPos.x > rightFootPos.x && ballPos.x < leftFootPos.x)
+                    {
+                        Debug.Log("Meg!");
+                        HandleMeg();
+                        isCheckingForMeg = false;
+                    }                        
                 }
             }
         }

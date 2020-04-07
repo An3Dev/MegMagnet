@@ -8,14 +8,16 @@ public class FPS : MonoBehaviour
     public TextMeshProUGUI text;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        Application.targetFrameRate = 120;
+        QualitySettings.vSyncCount = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Application.targetFrameRate = 120;
+        
         text.text = (1 / Time.deltaTime).ToString("0");
     }
 }

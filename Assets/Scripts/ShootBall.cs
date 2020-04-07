@@ -35,7 +35,7 @@ public class ShootBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxDistForSwipe = (Screen.height / 4) * 3;
+        maxDistForSwipe = (Screen.height / 3) * 2;
         minDistForSwipe = Screen.height / 20;
 
         PlaceBall();
@@ -136,11 +136,15 @@ public class ShootBall : MonoBehaviour
     void PlaceBall() {
 
         placedBall = ObjectPooler.Instance.EnableBall();
+        //TrailRenderer trail = placedBall.GetComponentInChildren<TrailRenderer>();
+        
+        //trail.enabled = false;
         Rigidbody rb = placedBall.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.Sleep();
         placedBall.transform.position = startPoint.position;
         placedBall.GetComponent<Rigidbody>().AddForce(-(placedBall.transform.position - placementPoint.position).normalized * placementForce, ForceMode.VelocityChange);
+        //trail.enabled = true;
     }
 }
