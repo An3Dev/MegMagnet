@@ -110,7 +110,7 @@ public class ShootBall : MonoBehaviour
             ballRb = placedBall.GetComponent<Rigidbody>();
 
             float normalizedDist = swipeDist / maxDistForSwipe;
-            Debug.Log(normalizedDist);
+
             normalizedDist = Mathf.Clamp(normalizedDist, 0.01f, 0.9f);
 
             normalizedDist = forceCurve.Evaluate(normalizedDist);

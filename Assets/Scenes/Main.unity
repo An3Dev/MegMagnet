@@ -437,7 +437,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &384227670
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -648,8 +648,8 @@ MonoBehaviour:
       inWeight: 0.58702695
       outWeight: 0.070874445
     - serializedVersion: 3
-      time: 0.8543986
-      value: 0.8471514
+      time: 0.8523234
+      value: 0.8029009
       inSlope: 2.3590908
       outSlope: 1.6991836
       tangentMode: 1
@@ -1363,7 +1363,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c517c05acbd5d4693473c43cf82cf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  legPrefab: {fileID: 5253368813843672843, guid: 42d0e3eb9b44b3c42a6d030161d6e3d6,
+  legPrefab: {fileID: 1864442888776568080, guid: ee5e065d8322e7e4bbf805d5d1c61606,
     type: 3}
   spawnerContainer: {fileID: 333251978}
   spawnLocations:
@@ -1371,7 +1371,7 @@ MonoBehaviour:
   - {fileID: 1644796929}
   - {fileID: 543980531}
   positionStandardDeviation: 0.75
-  spawnRate: 1.1
+  spawnRate: 1.23
 --- !u!4 &1919697411
 Transform:
   m_ObjectHideFlags: 0

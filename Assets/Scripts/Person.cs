@@ -8,11 +8,13 @@ public class Person : MonoBehaviour
     public float speed;
     public Rigidbody rb;
     Vector3 startingPosition;
-    public BoxCollider megTrigger;
+    public BoxCollider megStart;
 
     Camera mainCamera;
 
     public Person Instance;
+
+    public Transform leftFoot, rightFoot;
 
     private void Awake()
     {
@@ -67,6 +69,6 @@ public class Person : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = Vector3.right * speed;
+        rb.velocity = transform.forward * speed;
     }
 }
