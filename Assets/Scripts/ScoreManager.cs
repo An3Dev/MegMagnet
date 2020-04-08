@@ -71,6 +71,12 @@ public class ScoreManager : MonoBehaviour
 
         GameObject text = Instantiate(floatingTextPrefab, spawnPos , Quaternion.identity, canvas);
 
+        if (spawnPos.x > Screen.width / 2)
+        {
+            // spawn text that moves right
+            text.GetComponent<Animator>().SetTrigger("Left");
+        }
+
         text.transform.localScale = new Vector3(textSize, textSize, 1);
 
         text.GetComponentInChildren<TextMeshProUGUI>().text = "+" + pointsAdded.ToString();

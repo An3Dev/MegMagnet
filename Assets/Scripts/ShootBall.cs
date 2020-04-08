@@ -35,10 +35,19 @@ public class ShootBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxDistForSwipe = (Screen.height / 3) * 2;
+        maxDistForSwipe = (Screen.height / 8 * 5);
         minDistForSwipe = Screen.height / 20;
 
         PlaceBall();
+    }
+
+    void EnableBallPhysics(bool enable)
+    {
+        Rigidbody ballRb = placedBall.GetComponent<Rigidbody>();
+        placedBall.GetComponent<SphereCollider>().enabled = enable;
+
+        ballRb.isKinematic = !enable;
+        ballRb.useGravity = enable;
     }
 
     // Update is called once per frame
@@ -49,8 +58,14 @@ public class ShootBall : MonoBehaviour
             ballLimitTimer -= Time.deltaTime;
             if (ballLimitTimer <= 0)
             {
-                placedBall.transform.position = Vector3.Lerp(placedBall.transform.position, placementPoint.position, (1 / Time.deltaTime) * Time.deltaTime);
+                //placedBall.transform.position = Vector3.Lerp(placedBall.transform.position, placementPoint.position, (placementPoint.position - placedBall.transform.position).magnitude / Time.deltaTime);
+
+                Vector3 velocity = Vector3.zero;
+                placedBall.transform.position = Vector3.SmoothDamp(placedBall.transform.position, placementPoint.transform.position, ref velocity, 0.01f);
+                EnableBallPhysics(false);
             }
+
+
             // if the ball is close enough to the placement position, teleport it to the right place
             if (placedBall.transform.position.z >= placementPoint.position.z)
             {
@@ -64,14 +79,6 @@ public class ShootBall : MonoBehaviour
                 ballIsReady = true;
                 ballLimitTimer = 1;
             }
-        }
-
-        void EnableBallPhysics(bool enable)
-        {
-            Rigidbody ballRb = placedBall.GetComponent<Rigidbody>();
-            placedBall.GetComponent<SphereCollider>().enabled = enable;           
-
-            ballRb.useGravity = enable;
         }
 
         // if clicked for first time
@@ -91,6 +98,10 @@ public class ShootBall : MonoBehaviour
             {
                 return;
             }
+
+            Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
+            Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);
+            Debug.Log(flatDirection);
             RaycastHit hit = new RaycastHit();
 
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -115,12 +126,12 @@ public class ShootBall : MonoBehaviour
 
             normalizedDist = forceCurve.Evaluate(normalizedDist);
 
-            float normalizedTime = (1 - (Time.timeSinceLevelLoad - firstTouchTime)) * 0.1f;
+            float normalizedTime = (0.5f - (Time.timeSinceLevelLoad - firstTouchTime)) * 0.1f;
             normalizedTime = Mathf.Clamp(normalizedTime, 0.01f, 0.2f);
 
             float normalizedForce = normalizedTime + normalizedDist;
 
-            Vector3 force = ballDirection * maxBallSpeed * normalizedForce;
+            Vector3 force = flatDirection * maxBallSpeed * normalizedForce;
 
             ballRb.AddForce(force, ForceMode.VelocityChange);
 
@@ -137,8 +148,11 @@ public class ShootBall : MonoBehaviour
 
         placedBall = ObjectPooler.Instance.EnableBall();
         //TrailRenderer trail = placedBall.GetComponentInChildren<TrailRenderer>();
-        
+
         //trail.enabled = false;
+
+        placedBall.transform.rotation = 
+            Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)));
         Rigidbody rb = placedBall.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
