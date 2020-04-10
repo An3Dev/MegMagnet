@@ -127,7 +127,6 @@ public class Ball : MonoBehaviour
                     if (ballPos.x < rightFootPos.x && ballPos.x > leftFootPos.x ||
                         ballPos.x > rightFootPos.x && ballPos.x < leftFootPos.x)
                     {
-                        Debug.Log("Meg!");
                         HandleMeg();
                         isCheckingForMeg = false;
                     }                        
@@ -179,7 +178,7 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
+
         if (other.CompareTag("MegStart"))
         {
             isCheckingForMeg = true;
@@ -200,11 +199,13 @@ public class Ball : MonoBehaviour
                 if (initialMegPosition.z < rightFoot.root.transform.position.z)
                 {
                     isMegExitOnFarSideOfPlayer = true;
-                } else
+                }
+                else
                 {
                     isMegExitOnFarSideOfPlayer = false;
                 }
-            } else
+            }
+            else
             {
                 isPersonFacingRight = false;
 
@@ -219,16 +220,12 @@ public class Ball : MonoBehaviour
                 }
             }
 
-            //Debug.Log("Start meg, MegParent: " + other.transform.root.name + "Meg position" + other.transform.position);
-            
             // cancel the fade away
             fadeAway = false;
             startTime = Time.timeSinceLevelLoad;
-        
-            // Disable the meg collider
-            //other.GetComponent<BoxCollider>().enabled = false;
+
             numOfCollisions = 0;
-        } 
+        }
     }
 
     private void OnTriggerExit(Collider other)

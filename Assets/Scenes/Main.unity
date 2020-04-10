@@ -630,7 +630,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.288405
     - serializedVersion: 3
-      time: 0.12335246
+      time: 0.16935772
       value: 0.1398237
       inSlope: 1.8040789
       outSlope: 1.8040789
@@ -639,7 +639,7 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.20272735
+      time: 0.22215179
       value: 0.3029039
       inSlope: 0.4137183
       outSlope: 0.4137183
@@ -1418,8 +1418,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 184441522}
   timeScale: 1
-  fewTouchReduction: 1
-  manyTouchesReduction: 1
+  fewTouchReduction: 0.75
+  manyTouchesReduction: 0.5
   bonusAmount: 2
   floatingTextPrefab: {fileID: 1985850727715244552, guid: 988fc438660e6534eab024efa1d4da38,
     type: 3}

@@ -38,8 +38,7 @@ public class ScoreManager : MonoBehaviour
     public void UpdateScore(MegType megType, int numOfMegs, Vector3 ballPos)
     {
         long valueAdded = 0;
-
-        Debug.Log("Num of megs: " + numOfMegs);
+         
         if (megType == MegType.Clean)
         {
             valueAdded = (long)(pointsPerMeg * ((numOfMegs - 1 > 0) ? ((numOfMegs - 1) * bonusAmount) : 1));

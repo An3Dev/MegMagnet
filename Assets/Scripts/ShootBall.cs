@@ -46,7 +46,9 @@ public class ShootBall : MonoBehaviour
         Rigidbody ballRb = placedBall.GetComponent<Rigidbody>();
         placedBall.GetComponent<SphereCollider>().enabled = enable;
 
+        ballRb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
         ballRb.isKinematic = !enable;
+        
         ballRb.useGravity = enable;
     }
 
@@ -101,7 +103,7 @@ public class ShootBall : MonoBehaviour
 
             Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
             Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);
-            Debug.Log(flatDirection);
+
             RaycastHit hit = new RaycastHit();
 
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -126,7 +128,7 @@ public class ShootBall : MonoBehaviour
 
             normalizedDist = forceCurve.Evaluate(normalizedDist);
 
-            float normalizedTime = (0.5f - (Time.timeSinceLevelLoad - firstTouchTime)) * 0.1f;
+            float normalizedTime = (0.25f - (Time.timeSinceLevelLoad - firstTouchTime)) * 0.1f;
             normalizedTime = Mathf.Clamp(normalizedTime, 0.01f, 0.2f);
 
             float normalizedForce = normalizedTime + normalizedDist;

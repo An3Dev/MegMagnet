@@ -16,6 +16,12 @@ public class Person : MonoBehaviour
 
     public Transform leftFoot, rightFoot;
 
+    public SkinnedMeshRenderer renderer;
+
+    public Color[] shirtColors, pantsColors, shoeColors, skinColor;
+
+    public Material[] startingMaterials;
+
     private void Awake()
     {
         startingPosition = transform.position;
@@ -26,6 +32,44 @@ public class Person : MonoBehaviour
         mainCamera = Camera.main;
         Instance = this;
         EnableRagdoll(false, transform);
+
+        startingMaterials = renderer.materials;
+
+        ChangeMaterials();
+    }
+
+    void ChangeMaterials()
+    {
+        for(int i = 0; i < startingMaterials.Length; i++)
+        {
+            
+            renderer.materials[i] = Instantiate(startingMaterials[i]) as Material;
+            Material newMaterial = startingMaterials[i];
+            Debug.Log(newMaterial.color);
+
+            if (i == 0)
+            {
+                int randomColor = Random.Range(0, shirtColors.Length - 1);
+                newMaterial.color = shirtColors[randomColor];
+                Debug.Log("New: " + newMaterial.color);
+            }
+            if (i == 1)
+            {
+                int randomColor = Random.Range(0, pantsColors.Length - 1);
+                newMaterial.color = pantsColors[randomColor];
+            }
+            if (i == 2)
+            {
+                int randomColor = Random.Range(0, shoeColors.Length - 1);
+                newMaterial.color = shoeColors[randomColor];
+            }
+            if (i == 3)
+            {
+                int randomColor = Random.Range(0, skinColor.Length - 1);
+                newMaterial.color = skinColor[randomColor];
+            }
+
+        }
     }
 
     public void EnableRagdoll(bool enable, Transform parent)
@@ -40,6 +84,7 @@ public class Person : MonoBehaviour
                 Rigidbody childRb = child.GetComponent<Rigidbody>();
                 childRb.isKinematic = !enable;
                 childRb.useGravity = enable;
+                childRb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             }
 
             
