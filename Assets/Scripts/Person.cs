@@ -16,16 +16,28 @@ public class Person : MonoBehaviour
 
     public Transform leftFoot, rightFoot;
 
-    public SkinnedMeshRenderer renderer;
+    public SkinnedMeshRenderer personRenderer;
 
-    public Color[] shirtColors, pantsColors, shoeColors, skinColor;
+    public Color[] shirtColors, pantsColors, shoeColors, skinColors;
 
     public Material[] startingMaterials;
+
+    MaterialPropertyBlock block;
+
 
     private void Awake()
     {
         startingPosition = transform.position;
+
+        personRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+
+        // You can re-use this block between calls rather than constructing a new one each time.
+        block = new MaterialPropertyBlock();
+
+        // You can cache a reference to the renderer to avoid searching for it.
+        personRenderer.SetPropertyBlock(block);
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,42 +45,97 @@ public class Person : MonoBehaviour
         Instance = this;
         EnableRagdoll(false, transform);
 
-        startingMaterials = renderer.materials;
+
+        startingMaterials = personRenderer.materials;
 
         ChangeMaterials();
+
+
+        //int randomColor = Random.Range(0, shirtColors.Length - 1);
+
+        //// You can re-use this block between calls rather than constructing a new one each time.
+        //var block = new MaterialPropertyBlock();
+
+        //// You can look up the property by ID instead of the string to be more efficient.
+        //block.SetColor("_BaseColor", shirtColors[randomColor]);
+
+        //// You can cache a reference to the renderer to avoid searching for it.
+        //GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, 3);
+
     }
 
     void ChangeMaterials()
     {
+        //Debug.Log(startingMaterials.Length);
+
         for(int i = 0; i < startingMaterials.Length; i++)
         {
+            // order of materials is shirt, pants, shoes, skin
+
             
-            renderer.materials[i] = Instantiate(startingMaterials[i]) as Material;
+            //renderer.materials[i] = Instantiate(startingMaterials[i]) as Material;
             Material newMaterial = startingMaterials[i];
-            Debug.Log(newMaterial.color);
+
 
             if (i == 0)
             {
                 int randomColor = Random.Range(0, shirtColors.Length - 1);
-                newMaterial.color = shirtColors[randomColor];
-                Debug.Log("New: " + newMaterial.color);
+
+                // You can re-use this block between calls rather than constructing a new one each time.
+                var block = new MaterialPropertyBlock();
+
+                // You can look up the property by ID instead of the string to be more efficient.
+                block.SetColor("_BaseColor", shirtColors[randomColor]);
+
+                // You can cache a reference to the renderer to avoid searching for it.
+                GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
+
+                //Debug.Log("New: " + newMaterial.color);
             }
             if (i == 1)
             {
                 int randomColor = Random.Range(0, pantsColors.Length - 1);
-                newMaterial.color = pantsColors[randomColor];
+
+                // You can re-use this block between calls rather than constructing a new one each time.
+                var block = new MaterialPropertyBlock();
+
+                // You can look up the property by ID instead of the string to be more efficient.
+                block.SetColor("_BaseColor", pantsColors[randomColor]);
+
+                // You can cache a reference to the renderer to avoid searching for it.
+                GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
             }
             if (i == 2)
             {
                 int randomColor = Random.Range(0, shoeColors.Length - 1);
-                newMaterial.color = shoeColors[randomColor];
+
+                // You can re-use this block between calls rather than constructing a new one each time.
+                var block = new MaterialPropertyBlock();
+
+                // You can look up the property by ID instead of the string to be more efficient.
+                block.SetColor("_BaseColor", shoeColors[randomColor]);
+
+                // You can cache a reference to the renderer to avoid searching for it.
+                GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
             }
             if (i == 3)
             {
-                int randomColor = Random.Range(0, skinColor.Length - 1);
-                newMaterial.color = skinColor[randomColor];
+                int randomColor = Random.Range(0, skinColors.Length - 1);
+
+                // You can re-use this block between calls rather than constructing a new one each time.
+                var block = new MaterialPropertyBlock();
+
+                // You can look up the property by ID instead of the string to be more efficient.
+                block.SetColor("_BaseColor", skinColors[randomColor]);
+
+                // You can cache a reference to the renderer to avoid searching for it.
+                GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
             }
 
+            //personRenderer.SetPropertyBlock(block);  
+
+            //renderer.materials[i] = newMaterial;
+            //Debug.Log("Renderer" + personRenderer.materials[i].color);
         }
     }
 
@@ -85,9 +152,7 @@ public class Person : MonoBehaviour
                 childRb.isKinematic = !enable;
                 childRb.useGravity = enable;
                 childRb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-            }
-
-            
+            }          
 
             if (child.childCount != 0)
             {
@@ -110,6 +175,7 @@ public class Person : MonoBehaviour
         //    megTrigger.enabled = true;
         //    transform.position = startingPosition;
         //}
+
     }
 
     private void FixedUpdate()

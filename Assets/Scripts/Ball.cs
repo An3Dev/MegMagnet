@@ -174,6 +174,8 @@ public class Ball : MonoBehaviour
         // Disable the meg collider
         //other.GetComponent<BoxCollider>().enabled = false;
         numOfCollisions = 0;
+
+        //Debug.Break();
     }
 
     private void OnTriggerEnter(Collider other)
