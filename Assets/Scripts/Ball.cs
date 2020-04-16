@@ -38,9 +38,12 @@ public class Ball : MonoBehaviour
     bool wasExactlyBetweenLegs;
 
     public GameObject trail;
+
+    MyGameManager gameManager;
     void Awake()
     {
         startScale = transform.localScale;
+        gameManager = FindObjectOfType<MyGameManager>();
     }
     private void Start()
     {
@@ -71,7 +74,11 @@ public class Ball : MonoBehaviour
 
     void Update()
     {
-
+        if (!gameManager.play)
+        {
+            
+            return;
+        }
         if (isCheckingForMeg)
         {
             // if transform was destroyed stop checking for megs.

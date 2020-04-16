@@ -8,8 +8,6 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public float timeScale;
 
-    Transform lastBallThatMegged = null;
-
     long megScore;
     public enum MegType {Clean, FewTouches, ManyTouches};
     int pointsPerMeg = 20;
@@ -23,15 +21,50 @@ public class ScoreManager : MonoBehaviour
 
     public Transform canvas;
 
+    public int maxTime = 30;
+
+    float timeLeft = 30;
+
+    MyGameManager gameManager;
+
+    public TextMeshProUGUI timerText;
+
+    private void Awake()
+    {
+        gameManager = FindObjectOfType<MyGameManager>();
+    }
+
     void Start()
     {
+        timeLeft = maxTime;
+
         Instance = this;
         canvas = GameObject.Find("Canvas").transform;
     }
+
     private void Update()
     {
-        Time.timeScale = timeScale;
+        if (!gameManager.play) return;
 
+        timeLeft -= Time.deltaTime;
+
+        if (timeLeft <= 0) {
+            gameManager.play = false;
+        }
+
+        if (timeLeft / maxTime > 0.1f)
+        {
+            timerText.text = Mathf.CeilToInt(timeLeft).ToString();
+        } else
+        {
+            if (timeLeft > 0)
+            {
+                timerText.text = timeLeft.ToString("0.0");
+            } else
+            {
+                timerText.text = "0";
+            }
+        }
     }
 
 

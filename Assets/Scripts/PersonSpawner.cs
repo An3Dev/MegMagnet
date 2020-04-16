@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LegSpawner : MonoBehaviour
+public class PersonSpawner : MonoBehaviour
 {
 
     public GameObject legPrefab;
@@ -16,15 +16,19 @@ public class LegSpawner : MonoBehaviour
     float lastSpawnTime;
 
     int clones;
+
+    MyGameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameManager = FindObjectOfType<MyGameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!gameManager.play) return;
+
         if (Time.time - lastSpawnTime >= spawnRate)
         {
             int randomSpawnerIndex = Random.Range(0, spawnerContainer.childCount - 1);

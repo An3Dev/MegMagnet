@@ -32,11 +32,25 @@ public class ShootBall : MonoBehaviour
 
     public AnimationCurve forceCurve;
 
+    MyGameManager gameManager;
+
+    bool isBallPlaced = false;
+
+    private void Awake()
+    {
+        gameManager = FindObjectOfType<MyGameManager>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         maxDistForSwipe = (Screen.height / 8 * 5);
         minDistForSwipe = Screen.height / 20;
+
+        if (!gameManager.play)
+        {
+            return;
+        }
 
         PlaceBall();
     }
@@ -55,7 +69,18 @@ public class ShootBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!ballIsReady)
+
+        if (!gameManager.play)
+        {
+            return;
+        }
+
+        if (!isBallPlaced)
+        {
+            PlaceBall();
+        }
+
+        if (!ballIsReady && isBallPlaced)
         {
             ballLimitTimer -= Time.deltaTime;
             if (ballLimitTimer <= 0)
@@ -66,7 +91,6 @@ public class ShootBall : MonoBehaviour
                 placedBall.transform.position = Vector3.SmoothDamp(placedBall.transform.position, placementPoint.transform.position, ref velocity, 0.01f);
                 EnableBallPhysics(false);
             }
-
 
             // if the ball is close enough to the placement position, teleport it to the right place
             if (placedBall.transform.position.z >= placementPoint.position.z)
@@ -104,20 +128,6 @@ public class ShootBall : MonoBehaviour
             Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
             Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);
 
-            RaycastHit hit = new RaycastHit();
-
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-            Vector3 hitPosition = Vector3.zero;
-
-            if (Physics.Raycast(ray, out hit, 100, aimableLayer)) {
-                hitPosition = hit.point;
-            }
-
-            // point without 
-            Vector3 modifiedWorldPoint = new Vector3(hitPosition.x, placedBall.transform.position.y, hitPosition.z);
-            Vector3 ballDirection = -(placedBall.transform.position - modifiedWorldPoint).normalized;
-
             EnableBallPhysics(true);
 
             ballRb = placedBall.GetComponent<Rigidbody>();
@@ -133,25 +143,41 @@ public class ShootBall : MonoBehaviour
 
             float normalizedForce = normalizedTime + normalizedDist;
 
+
+
             Vector3 force = flatDirection * maxBallSpeed * normalizedForce;
 
             ballRb.AddForce(force, ForceMode.VelocityChange);
 
+
+            TrailRenderer trail = placedBall.GetComponentInChildren<TrailRenderer>();
+
+            if (trail != null)
+            {
+                trail.enabled = true;
+            }
+
             ballRb.GetComponent<Ball>().Instance.WasKicked();
 
             firstTouchTime = -1;
+
             // Get another ball ready
             ballIsReady = false;
+
             PlaceBall();
         }
     }
 
+
     void PlaceBall() {
 
         placedBall = ObjectPooler.Instance.EnableBall();
-        //TrailRenderer trail = placedBall.GetComponentInChildren<TrailRenderer>();
+        TrailRenderer trail = placedBall.GetComponentInChildren<TrailRenderer>();
 
-        //trail.enabled = false;
+        if (trail != null)
+        {
+            trail.enabled = false;
+        }
 
         placedBall.transform.rotation = 
             Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360)));
@@ -161,6 +187,8 @@ public class ShootBall : MonoBehaviour
         rb.Sleep();
         placedBall.transform.position = startPoint.position;
         placedBall.GetComponent<Rigidbody>().AddForce(-(placedBall.transform.position - placementPoint.position).normalized * placementForce, ForceMode.VelocityChange);
+
+        isBallPlaced = true;
         //trail.enabled = true;
     }
 }
