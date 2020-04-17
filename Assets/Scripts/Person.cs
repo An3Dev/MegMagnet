@@ -32,10 +32,10 @@ public class Person : MonoBehaviour
         personRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         // You can re-use this block between calls rather than constructing a new one each time.
-        block = new MaterialPropertyBlock();
+        //block = new MaterialPropertyBlock();
 
         // You can cache a reference to the renderer to avoid searching for it.
-        personRenderer.SetPropertyBlock(block);
+        //personRenderer.SetPropertyBlock(block);
     }
 
     // Start is called before the first frame update
@@ -82,7 +82,7 @@ public class Person : MonoBehaviour
                 int randomColor = Random.Range(0, shirtColors.Length - 1);
 
                 // You can re-use this block between calls rather than constructing a new one each time.
-                var block = new MaterialPropertyBlock();
+                block = new MaterialPropertyBlock();
 
                 // You can look up the property by ID instead of the string to be more efficient.
                 block.SetColor("_BaseColor", shirtColors[randomColor]);
@@ -97,7 +97,7 @@ public class Person : MonoBehaviour
                 int randomColor = Random.Range(0, pantsColors.Length - 1);
 
                 // You can re-use this block between calls rather than constructing a new one each time.
-                var block = new MaterialPropertyBlock();
+                block = new MaterialPropertyBlock();
 
                 // You can look up the property by ID instead of the string to be more efficient.
                 block.SetColor("_BaseColor", pantsColors[randomColor]);
@@ -110,7 +110,7 @@ public class Person : MonoBehaviour
                 int randomColor = Random.Range(0, shoeColors.Length - 1);
 
                 // You can re-use this block between calls rather than constructing a new one each time.
-                var block = new MaterialPropertyBlock();
+                block = new MaterialPropertyBlock();
 
                 // You can look up the property by ID instead of the string to be more efficient.
                 block.SetColor("_BaseColor", shoeColors[randomColor]);
@@ -123,7 +123,7 @@ public class Person : MonoBehaviour
                 int randomColor = Random.Range(0, skinColors.Length - 1);
 
                 // You can re-use this block between calls rather than constructing a new one each time.
-                var block = new MaterialPropertyBlock();
+                block = new MaterialPropertyBlock();
 
                 // You can look up the property by ID instead of the string to be more efficient.
                 block.SetColor("_BaseColor", skinColors[randomColor]);

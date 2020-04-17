@@ -7,6 +7,8 @@ public class MyGameManager : MonoBehaviour
 
     public bool play = false;
 
+    public bool gameOver = false;
+
     public static MyGameManager Instance;
 
     TextMeshProUGUI timer;

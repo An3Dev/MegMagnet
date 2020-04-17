@@ -7,7 +7,7 @@ public class PersonSpawner : MonoBehaviour
 
     public GameObject legPrefab;
     public Transform spawnerContainer;
-    public Transform[] spawnLocations;
+    //public Transform[] spawnLocations;
 
     public float positionStandardDeviation = 1;
 
@@ -27,11 +27,11 @@ public class PersonSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!gameManager.play) return;
+        if (!gameManager.play && !gameManager.gameOver) return;
 
         if (Time.time - lastSpawnTime >= spawnRate)
         {
-            int randomSpawnerIndex = Random.Range(0, spawnerContainer.childCount - 1);
+            int randomSpawnerIndex = Random.Range(0, spawnerContainer.childCount);
             Transform spawner = spawnerContainer.GetChild(randomSpawnerIndex);
 
             Vector3 position = new Vector3(Random.Range(spawner.position.x - positionStandardDeviation, 

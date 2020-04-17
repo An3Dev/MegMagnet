@@ -50,6 +50,7 @@ public class ScoreManager : MonoBehaviour
 
         if (timeLeft <= 0) {
             gameManager.play = false;
+            gameManager.gameOver = false;
         }
 
         if (timeLeft / maxTime > 0.1f)
@@ -106,7 +107,14 @@ public class ScoreManager : MonoBehaviour
         if (spawnPos.x > Screen.width / 2)
         {
             // spawn text that moves right
-            text.GetComponent<Animator>().SetTrigger("Left");
+            SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
+
+
+            //text.GetComponent<Animator>().SetTrigger("Left");
+        } else
+        {
+            // spawn text that moves right
+            SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
         }
 
         text.transform.localScale = new Vector3(textSize, textSize, 1);
