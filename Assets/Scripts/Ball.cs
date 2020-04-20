@@ -40,6 +40,8 @@ public class Ball : MonoBehaviour
     public GameObject trail;
 
     MyGameManager gameManager;
+
+    Camera mainCamera;
     void Awake()
     {
         startScale = transform.localScale;
@@ -49,6 +51,7 @@ public class Ball : MonoBehaviour
     {
         scoreManager = FindObjectOfType<ScoreManager>();
         Instance = this;
+        mainCamera = Camera.main;
     }
 
     public void WasKicked()
@@ -75,9 +78,16 @@ public class Ball : MonoBehaviour
     void Update()
     {
         if (!gameManager.play)
-        {
-            
+        {          
             return;
+        }
+
+        if (wasKicked)
+        {
+            if (transform.position.z < mainCamera.transform.position.z) {
+                DisableBall();
+                Debug.Log("Disable");
+            }
         }
         if (isCheckingForMeg)
         {
@@ -153,11 +163,16 @@ public class Ball : MonoBehaviour
             transform.localScale -= new Vector3(value, value, value);
             if (transform.localScale.x < 0.01f)
             {
-                fadeAway = false;
-                wasKicked = false;
-                gameObject.SetActive(false);
+                DisableBall();
             }
         }
+    }
+
+    void DisableBall()
+    {
+        fadeAway = false;
+        wasKicked = false;
+        gameObject.SetActive(false);
     }
 
     private void HandleMeg()

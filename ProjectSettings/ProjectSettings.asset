@@ -761,10 +761,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: d7ab6ed6-c18c-44f0-85d3-b63b6ad1a869
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: MegMadness
+  organizationId: an3developer
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

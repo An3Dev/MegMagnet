@@ -90,8 +90,7 @@ public class ScoreManager : MonoBehaviour
         ShowFloatingText(ballPos, valueAdded);
 
         //megScore += pointsPerMeg;
-        scoreText.text = "Score: " + megScore;
-        Debug.Log("Score: " + megScore);
+        scoreText.text = megScore.ToString();
     }
 
 
@@ -107,15 +106,16 @@ public class ScoreManager : MonoBehaviour
         if (spawnPos.x > Screen.width / 2)
         {
             // spawn text that moves right
-            SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
+            //SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
 
 
-            //text.GetComponent<Animator>().SetTrigger("Left");
-        } else
-        {
-            // spawn text that moves right
-            SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
+            text.GetComponent<Animator>().SetTrigger("Left");
         }
+        //else
+        //{
+        //    // spawn text that moves right
+        //    SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
+        //}
 
         text.transform.localScale = new Vector3(textSize, textSize, 1);
 
