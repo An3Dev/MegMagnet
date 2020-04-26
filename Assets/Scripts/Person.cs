@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Person : MonoBehaviour
 {
-
     public float speed;
     public Rigidbody rb;
     Vector3 startingPosition;
@@ -24,11 +23,14 @@ public class Person : MonoBehaviour
 
     MaterialPropertyBlock block;
 
+    public Animator animator;
 
+    float walkingSpeed;
+
+    public float minWalkingSpeed, maxWalkingSpeed;
     private void Awake()
     {
         startingPosition = transform.position;
-
         personRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         // You can re-use this block between calls rather than constructing a new one each time.
@@ -41,6 +43,11 @@ public class Person : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        walkingSpeed = 1;
+        //walkingSpeed = Random.Range(minWalkingSpeed, maxWalkingSpeed);
+        animator.SetFloat("Speed", walkingSpeed);
+        animator.SetFloat("AnimationIndex",    Random.Range(0, 10));
+
         mainCamera = Camera.main;
         Instance = this;
         EnableRagdoll(false, transform);
@@ -180,6 +187,6 @@ public class Person : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = transform.forward * speed;
+        rb.velocity = transform.forward * (walkingSpeed + 1);
     }
 }

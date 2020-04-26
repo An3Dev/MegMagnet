@@ -27,7 +27,7 @@ public class PersonSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!gameManager.play && !gameManager.gameOver) return;
+        //if (!gameManager.play && !gameManager.gameOver) return;
 
         if (Time.time - lastSpawnTime >= spawnRate)
         {

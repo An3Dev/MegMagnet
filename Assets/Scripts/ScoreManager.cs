@@ -10,7 +10,7 @@ public class ScoreManager : MonoBehaviour
 
     long megScore;
     public enum MegType {Clean, FewTouches, ManyTouches};
-    int pointsPerMeg = 20;
+    public int pointsPerMeg = 20;
     public float fewTouchReduction = 0.75f;
     public float manyTouchesReduction = 0.5f;
     public float bonusAmount = 2;
@@ -29,6 +29,13 @@ public class ScoreManager : MonoBehaviour
 
     public TextMeshProUGUI timerText;
 
+    public AnimationCurve curve;
+
+    public float maxScaleOfTimer = 1.25f;
+
+    bool scaledTimer = false;
+
+    public AnimationCurve scaleCurve;
     private void Awake()
     {
         gameManager = FindObjectOfType<MyGameManager>();
@@ -40,6 +47,7 @@ public class ScoreManager : MonoBehaviour
 
         Instance = this;
         canvas = GameObject.Find("Canvas").transform;
+        timerText.text = maxTime.ToString();
     }
 
     private void Update()
@@ -48,12 +56,24 @@ public class ScoreManager : MonoBehaviour
 
         timeLeft -= Time.deltaTime;
 
+        //float number = Mathf.Round(timeLeft * 100f) / 100f % 1;
+        if (timeLeft % 1 < Time.deltaTime + 0.01f && !scaledTimer)
+        {
+            scaledTimer = true;
+            float scale = 1.05f + (maxScaleOfTimer - 1) * scaleCurve.Evaluate((maxTime - timeLeft) / maxTime);
+            PlayTimerAnimation(new Vector3(scale, scale, scale));
+        } else if (scaledTimer)
+        {
+            scaledTimer = false;
+        }
+
         if (timeLeft <= 0) {
             gameManager.play = false;
             gameManager.gameOver = false;
+            GameOver();
         }
 
-        if (timeLeft / maxTime > 0.1f)
+        if (timeLeft > 10)
         {
             timerText.text = Mathf.CeilToInt(timeLeft).ToString();
         } else
@@ -68,6 +88,15 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    void GameOver()
+    {
+
+    }
+
+    void PlayTimerAnimation(Vector3 scale)
+    {
+        timerText.gameObject.LeanScale(scale, 0.6f).setEase(curve);
+    }
 
     public void UpdateScore(MegType megType, int numOfMegs, Vector3 ballPos)
     {
