@@ -53,14 +53,17 @@ public class ScoreManager : MonoBehaviour
             gameManager.gameOver = false;
         }
 
-        if (timeLeft / maxTime > 0.1f)
+        if (timeLeft > 10)
         {
-            timerText.text = Mathf.CeilToInt(timeLeft).ToString();
+            timerText.text = Mathf.FloorToInt(timeLeft).ToString();
         } else
         {
-            if (timeLeft > 0)
+            if (timeLeft < 10 && timeLeft > 5)
             {
                 timerText.text = timeLeft.ToString("0.0");
+            } else if (timeLeft < 5 && timeLeft > 0)
+            {
+                timerText.text = timeLeft.ToString("0.00");
             } else
             {
                 timerText.text = "0";
@@ -90,8 +93,7 @@ public class ScoreManager : MonoBehaviour
         ShowFloatingText(ballPos, valueAdded);
 
         //megScore += pointsPerMeg;
-        scoreText.text = "Score: " + megScore;
-        Debug.Log("Score: " + megScore);
+        scoreText.text = megScore.ToString();
     }
 
 
@@ -107,15 +109,24 @@ public class ScoreManager : MonoBehaviour
         if (spawnPos.x > Screen.width / 2)
         {
             // spawn text that moves right
-            SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
+            //SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
 
 
-            //text.GetComponent<Animator>().SetTrigger("Left");
+            text.GetComponent<Animator>().SetTrigger("Left");
+<<<<<<< HEAD
         } else
         {
             // spawn text that moves right
-            SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
+
+            //SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
+=======
+>>>>>>> 611b94c07eec8dbd1d151c86cd1dd64defe10c5b
         }
+        //else
+        //{
+        //    // spawn text that moves right
+        //    SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
+        //}
 
         text.transform.localScale = new Vector3(textSize, textSize, 1);
 

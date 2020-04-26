@@ -40,6 +40,8 @@ public class Ball : MonoBehaviour
     public GameObject trail;
 
     MyGameManager gameManager;
+
+    Camera mainCamera;
     void Awake()
     {
         startScale = transform.localScale;
@@ -49,6 +51,7 @@ public class Ball : MonoBehaviour
     {
         scoreManager = FindObjectOfType<ScoreManager>();
         Instance = this;
+        mainCamera = Camera.main;
     }
 
     public void WasKicked()
@@ -75,9 +78,16 @@ public class Ball : MonoBehaviour
     void Update()
     {
         if (!gameManager.play)
-        {
-            
+        {          
             return;
+        }
+
+        if (wasKicked)
+        {
+            if (transform.position.z < mainCamera.transform.position.z) {
+                DisableBall();
+                Debug.Log("Disable");
+            }
         }
         if (isCheckingForMeg)
         {
@@ -98,7 +108,7 @@ public class Ball : MonoBehaviour
                 if (ballPos.x < rightFootPos.x && ballPos.x > leftFootPos.x ||
                         ballPos.x > rightFootPos.x && ballPos.x < leftFootPos.x)
                 {
-                    //Debug.Log("Between both legs");
+                    Debug.Log("Between both legs on x axis");
                     // if player is facing right and meg should go away from camera and ball is between the legs on the z axis
                     if (isMegExitOnFarSideOfPlayer && isPersonFacingRight && 
                         ballPos.z >= rightFootPos.z + ((leftFootPos.z - rightFootPos.z) / 2) 
@@ -130,12 +140,15 @@ public class Ball : MonoBehaviour
                      || isMegExitOnFarSideOfPlayer && !isPersonFacingRight && ballPos.z >= rightFootPos.z
                      || !isMegExitOnFarSideOfPlayer && !isPersonFacingRight && ballPos.z <= leftFootPos.z)
                 {
+                    Debug.Log("Ball is past the exit foot");
                     // if the ball is within the feet on the x axis
                     if (ballPos.x < rightFootPos.x && ballPos.x > leftFootPos.x ||
                         ballPos.x > rightFootPos.x && ballPos.x < leftFootPos.x)
                     {
+                        Debug.Log("Ball within the feet on the x axis. Meg");
                         HandleMeg();
                         isCheckingForMeg = false;
+                        wasExactlyBetweenLegs = false;
                     }                        
                 }
             }
@@ -153,11 +166,16 @@ public class Ball : MonoBehaviour
             transform.localScale -= new Vector3(value, value, value);
             if (transform.localScale.x < 0.01f)
             {
-                fadeAway = false;
-                wasKicked = false;
-                gameObject.SetActive(false);
+                DisableBall();
             }
         }
+    }
+
+    void DisableBall()
+    {
+        fadeAway = false;
+        wasKicked = false;
+        gameObject.SetActive(false);
     }
 
     private void HandleMeg()
@@ -187,10 +205,11 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.CompareTag("MegStart"))
         {
+            Debug.Log("MegStart");
             isCheckingForMeg = true;
+            wasExactlyBetweenLegs = false;
             person = other.transform.root.GetComponent<Person>();
             leftFoot = person.Instance.leftFoot;
             rightFoot = person.Instance.rightFoot;
