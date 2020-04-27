@@ -276,6 +276,6 @@ public class Person : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = transform.forward * (walkingSpeed + 1);
+        rb.velocity = transform.forward * 2;
     }
 }
