@@ -43,6 +43,7 @@ public class PersonSpawner : MonoBehaviour
             Destroy(leg, 10);
             lastSpawnTime = Time.time;
             clones++;
+            spawnRate = Random.Range(1.5f, 4);
         }
     }
 }

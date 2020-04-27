@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 using TMPro;
 
 public class ScoreManager : MonoBehaviour
@@ -84,6 +86,13 @@ public class ScoreManager : MonoBehaviour
             } else
             {
                 timerText.text = "0";
+            }
+        }
+        if (gameManager.gameOver)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                
             }
         }
     }

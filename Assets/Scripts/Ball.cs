@@ -86,7 +86,6 @@ public class Ball : MonoBehaviour
         {
             if (transform.position.z < mainCamera.transform.position.z) {
                 DisableBall();
-                Debug.Log("Disable");
             }
         }
         if (isCheckingForMeg)
