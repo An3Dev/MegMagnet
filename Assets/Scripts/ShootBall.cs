@@ -85,8 +85,6 @@ public class ShootBall : MonoBehaviour
             ballLimitTimer -= Time.deltaTime;
             if (ballLimitTimer <= 0)
             {
-                //placedBall.transform.position = Vector3.Lerp(placedBall.transform.position, placementPoint.position, (placementPoint.position - placedBall.transform.position).magnitude / Time.deltaTime);
-
                 Vector3 velocity = Vector3.zero;
                 placedBall.transform.position = Vector3.SmoothDamp(placedBall.transform.position, placementPoint.transform.position, ref velocity, 0.01f);
                 EnableBallPhysics(false);

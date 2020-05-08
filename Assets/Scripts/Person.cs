@@ -162,16 +162,11 @@ public class Person : MonoBehaviour
 
     void ChangeMaterials()
     {
-        //Debug.Log(startingMaterials.Length);
-
         for(int i = 0; i < startingMaterials.Length; i++)
         {
             // order of materials is shirt, pants, shoes, skin
 
-            
-            //renderer.materials[i] = Instantiate(startingMaterials[i]) as Material;
             Material newMaterial = startingMaterials[i];
-
 
             if (i == 0)
             {
@@ -218,20 +213,14 @@ public class Person : MonoBehaviour
             {
                 int randomColor = Random.Range(0, skinColors.Length - 1);
 
-                // You can re-use this block between calls rather than constructing a new one each time.
+                
                 block = new MaterialPropertyBlock();
 
-                // You can look up the property by ID instead of the string to be more efficient.
                 block.SetColor("_BaseColor", skinColors[randomColor]);
 
-                // You can cache a reference to the renderer to avoid searching for it.
+                
                 GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
             }
-
-            //personRenderer.SetPropertyBlock(block);  
-
-            //renderer.materials[i] = newMaterial;
-            //Debug.Log("Renderer" + personRenderer.materials[i].color);
         }
     }
 

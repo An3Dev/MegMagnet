@@ -5,7 +5,7 @@ using UnityEngine;
 public class PersonSpawner : MonoBehaviour
 {
 
-    public GameObject legPrefab;
+    public GameObject personPrefab;
     public Transform spawnerContainer;
     //public Transform[] spawnLocations;
 
@@ -38,9 +38,9 @@ public class PersonSpawner : MonoBehaviour
                 spawner.position.x + positionStandardDeviation), spawner.position.y, 
                     spawner.position.z);
 
-            GameObject leg = Instantiate(legPrefab, position, spawner.rotation);
-            leg.name = clones.ToString();
-            Destroy(leg, 10);
+            GameObject person = Instantiate(personPrefab, position, spawner.rotation);
+            person.name = clones.ToString();
+            Destroy(person, 10);
             lastSpawnTime = Time.time;
             clones++;
             spawnRate = Random.Range(1.5f, 4);
