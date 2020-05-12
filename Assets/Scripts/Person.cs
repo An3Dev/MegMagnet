@@ -75,7 +75,8 @@ public class Person : MonoBehaviour
         else if (percent >= 45 && percent < 55) // ten percent change
         {
             // alternate 2 regular walk. short arm length
-            animationIndex = 5;
+            animationIndex = 4;
+            //walkingSpeed = 1.05f;
         }
         else if (percent >= 55 && percent < 65) // ten percent change
         {
@@ -85,7 +86,8 @@ public class Person : MonoBehaviour
         else if (percent >= 65 && percent < 75) // ten percent change
         {
             // calm walk
-            animationIndex = 7;
+            //animationIndex = 7;
+            animationIndex = 0;
         }
         else if (percent >= 75 && percent < 85) // ten percent change
         {
@@ -96,7 +98,7 @@ public class Person : MonoBehaviour
         {
             // swag walk
             animationIndex = 1;
-            walkingSpeed = 0.5f;
+            walkingSpeed = 0.4f;
         }
         else if (percent >= 93 && percent < 97) // 5 percent change
         {
@@ -107,6 +109,7 @@ public class Person : MonoBehaviour
         {
             // weird walk
             animationIndex = 9;
+            walkingSpeed = 0.8f;
         }
         else if (percent >= 99) // one percent change
         {
@@ -115,7 +118,7 @@ public class Person : MonoBehaviour
             walkingSpeed = 0.75f;
         }
 
-        animationIndex = 0;
+        //animationIndex = 0;
         animator.SetTrigger(animationIndex.ToString());
         
         //animationComponent.Play(animationComponent.clip)

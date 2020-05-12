@@ -11,9 +11,11 @@ public class PersonSpawner : MonoBehaviour
 
     public float positionStandardDeviation = 1;
 
-    public float spawnRate = 3;
+    public float spawnRate = 0.5f;
 
     float lastSpawnTime;
+
+    public float minSpawnRate, maxSpawnRate;
 
     int clones;
 
@@ -43,7 +45,7 @@ public class PersonSpawner : MonoBehaviour
             Destroy(person, 10);
             lastSpawnTime = Time.time;
             clones++;
-            spawnRate = Random.Range(1.5f, 4);
+            spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
         }
     }
 }

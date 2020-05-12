@@ -76,12 +76,7 @@ public class Ball : MonoBehaviour
     }
 
     void Update()
-    {
-        if (!gameManager.play)
-        {          
-            return;
-        }
-
+    { 
         if (wasKicked)
         {
             if (transform.position.z < mainCamera.transform.position.z) {
@@ -202,7 +197,7 @@ public class Ball : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-        if (other.CompareTag("MegStart"))
+        if (other.CompareTag("MegStart") && !isCheckingForMeg)
         {
             isCheckingForMeg = true;
             person = other.transform.root.GetComponent<Person>();
