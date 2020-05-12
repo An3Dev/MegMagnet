@@ -18,7 +18,7 @@ namespace An3Apps
 
         public int GetHighScore()
         {
-            Debug.Log("Get high score = " + highScore);
+            //Debug.Log("Get high score = " + highScore);
             return highScore;
         }
 
@@ -26,7 +26,7 @@ namespace An3Apps
         {
             PlayerPrefs.SetInt(highScoreKey, value);
             highScore = value;
-            Debug.Log("set high score: " + highScore + " And " + GetHighScore());
+            //Debug.Log("set high score: " + highScore + " And " + GetHighScore());
         }
 
         // Start is called before the first frame update
