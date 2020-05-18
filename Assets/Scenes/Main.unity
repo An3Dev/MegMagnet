@@ -739,6 +739,25 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &524632766 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5754827649168544054, guid: 0a0066f80bb2cea44bb4f66229698983,
+    type: 3}
+  m_PrefabInstance: {fileID: 1496659924}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &524632770
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524632766}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 43.5558, y: 7.6505575, z: 0.38533562}
+  m_Center: {x: 0, y: 2.443178, z: 0.000000014901161}
 --- !u!1 &543980530
 GameObject:
   m_ObjectHideFlags: 0
@@ -1421,7 +1440,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!108 &1076099922
 Light:
@@ -1474,7 +1493,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -3117,6 +3136,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingBallNumber: 3
   ballPrefab: {fileID: 3106471098903769361, guid: e251620c930f257448e094111226f7e9,
+    type: 3}
+  startingPersonsNumber: 5
+  personPrefab: {fileID: 1864442888776568080, guid: ee5e065d8322e7e4bbf805d5d1c61606,
     type: 3}
 --- !u!4 &2002639095
 Transform:

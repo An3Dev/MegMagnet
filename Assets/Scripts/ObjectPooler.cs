@@ -9,6 +9,10 @@ public class ObjectPooler : MonoBehaviour
     public int startingBallNumber = 3;
     public GameObject ballPrefab;
 
+    List<GameObject> spawnedPersonsList = new List<GameObject>();
+    public int startingPersonsNumber = 5;
+    public GameObject personPrefab;
+
     public static ObjectPooler Instance;
 
     void Awake()
@@ -19,6 +23,13 @@ public class ObjectPooler : MonoBehaviour
             GameObject ball = Instantiate(ballPrefab);
             ball.SetActive(false);
             spawnedBallsList.Add(ball);
+        }
+
+        for (int i = 0; i < startingPersonsNumber; i++)
+        {
+            GameObject person = Instantiate(personPrefab);
+            person.SetActive(false);
+            spawnedPersonsList.Add(person);
         }
     }
 
@@ -39,6 +50,24 @@ public class ObjectPooler : MonoBehaviour
         GameObject spawnedBall = Instantiate(ballPrefab);
         spawnedBallsList.Add(spawnedBall);
         return spawnedBall;
+    }
+
+    public GameObject EnablePerson()
+    {
+        for (int i = 0; i < spawnedPersonsList.Count - 1; i++)
+        {
+            GameObject person = spawnedPersonsList[i];
+            if (!person.activeInHierarchy)
+            {
+                person.SetActive(true);
+                return person;
+            }
+        }
+
+        // There aren't any available balls so spawn one.
+        GameObject spawnedPerson = Instantiate(personPrefab);
+        spawnedPersonsList.Add(spawnedPerson);
+        return spawnedPerson;
     }
 
 }

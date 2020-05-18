@@ -129,7 +129,7 @@ public class Person : MonoBehaviour
 
         startingMaterials = personRenderer.materials;
 
-        ChangeMaterials();
+        //ChangeMaterials();
 
     }
     //// Start is called before the first frame update
