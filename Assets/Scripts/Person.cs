@@ -42,10 +42,10 @@ public class Person : MonoBehaviour
         //animationComponent = GetComponentInChildren<Animation>();
 
         // You can re-use this block between calls rather than constructing a new one each time.
-        //block = new MaterialPropertyBlock();
+        block = new MaterialPropertyBlock();
 
         // You can cache a reference to the renderer to avoid searching for it.
-        //personRenderer.SetPropertyBlock(block);
+        personRenderer.SetPropertyBlock(block);
     }
 
     void OnEnable()
@@ -104,6 +104,7 @@ public class Person : MonoBehaviour
         {
             // gangster walk
             animationIndex = 6;
+            walkingSpeed = 0.5f;
         }
         else if (percent >= 97 && percent < 99) // 2 percent change
         {
@@ -129,7 +130,7 @@ public class Person : MonoBehaviour
 
         startingMaterials = personRenderer.materials;
 
-        //ChangeMaterials();
+        ChangeMaterials();
 
     }
     //// Start is called before the first frame update

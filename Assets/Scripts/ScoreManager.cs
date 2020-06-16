@@ -108,7 +108,6 @@ public class ScoreManager : MonoBehaviour
             timerText.transform.localScale = Vector3.one;
             float scale = 1.05f + (maxScaleOfTimer - 1) * scaleCurve.Evaluate((maxTime - timeLeft) / maxTime);
             PlayTimerAnimation(new Vector3(scale, scale, scale));
-            Debug.Log("Scale: " + scale);
         } else if (scaledTimer)
         {
             scaledTimer = false;
@@ -168,7 +167,7 @@ public class ScoreManager : MonoBehaviour
 
     void PlayTimerAnimation(Vector3 scale)
     {
-        Debug.Log("Current scale: " + timerText.transform.localScale.ToString() + "DesiredScale: " + scale);
+        //Debug.Log("Current scale: " + timerText.transform.localScale.ToString() + "DesiredScale: " + scale);
         timerText.gameObject.LeanScale(scale, 0.6f).setEase(curve);
     }
 

@@ -19,6 +19,7 @@ namespace An3Apps
         public int GetHighScore()
         {
             //Debug.Log("Get high score = " + highScore);
+            int highScore = PlayerPrefs.GetInt(highScoreKey, 0);
             return highScore;
         }
 

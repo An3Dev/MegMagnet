@@ -41,7 +41,7 @@ public class PersonSpawner : MonoBehaviour
             Transform spawner = spawnerContainer.GetChild(randomSpawnerIndex);
 
             Vector3 position = new Vector3(Random.Range(spawner.position.x - positionStandardDeviation, 
-                spawner.position.x + positionStandardDeviation), spawner.position.y, 
+                spawner.position.x), spawner.position.y, 
                     spawner.position.z);
 
             //GameObject person = Instantiate(personPrefab, position, spawner.rotation);
