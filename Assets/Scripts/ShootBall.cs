@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ShootBall : MonoBehaviour
@@ -35,6 +36,8 @@ public class ShootBall : MonoBehaviour
     MyGameManager gameManager;
 
     bool isBallPlaced = false;
+
+    public List<Transform> ballsList;
 
     private void Awake()
     {
@@ -117,6 +120,9 @@ public class ShootBall : MonoBehaviour
         {
             float swipeDist = (Input.mousePosition - firstTouchPos).magnitude;
 
+            ballsList.Add(placedBall.transform);
+
+            placedBall.name = "SoccerBall#" + ballsList.Count;
             // if swipe is too short, return
             if (swipeDist < minDistForSwipe)
             {

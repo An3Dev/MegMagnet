@@ -13,6 +13,7 @@ public class MyGameManager : MonoBehaviour
 
     TextMeshProUGUI timer;
 
+    public float timeScale;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +23,7 @@ public class MyGameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Time.timeScale = timeScale;
         if (!play)
         {
             if (Input.GetMouseButton(0))

@@ -23,6 +23,8 @@ public class PersonSpawner : MonoBehaviour
     MyGameManager gameManager;
 
     ObjectPooler objectPooler;
+
+    public List<Transform> personList;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +48,9 @@ public class PersonSpawner : MonoBehaviour
 
             //GameObject person = Instantiate(personPrefab, position, spawner.rotation);
             GameObject person = objectPooler.EnablePerson();
+
+            personList.Add(person.transform);
+
             person.transform.position = position;
             person.transform.rotation = spawner.rotation;
             person.name = clones.ToString();
@@ -61,6 +66,7 @@ public class PersonSpawner : MonoBehaviour
     IEnumerator DisablePerson(GameObject person, float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
+        personList.Remove(person.transform);
         person.SetActive(false);
     }
 }
