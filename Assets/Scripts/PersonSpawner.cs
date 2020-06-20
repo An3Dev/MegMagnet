@@ -25,6 +25,9 @@ public class PersonSpawner : MonoBehaviour
     ObjectPooler objectPooler;
 
     public List<Transform> personList;
+
+    float doubleMegProbability = 5; // percent
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,8 @@ public class PersonSpawner : MonoBehaviour
 
         if (Time.time - lastSpawnTime >= spawnRate)
         {
+            bool doubleMeg = Random.Range(0, 100) <= doubleMegProbability;
+
             int randomSpawnerIndex = Random.Range(0, spawnerContainer.childCount);
             Transform spawner = spawnerContainer.GetChild(randomSpawnerIndex);
 
@@ -46,20 +51,59 @@ public class PersonSpawner : MonoBehaviour
                 spawner.position.x), spawner.position.y, 
                     spawner.position.z);
 
-            //GameObject person = Instantiate(personPrefab, position, spawner.rotation);
-            GameObject person = objectPooler.EnablePerson();
+            if (doubleMeg)
+            {
+                //Time.timeScale = 0.1f;
+                for(int i = 0; i < 2; i++)
+                {
+                    GameObject person = objectPooler.EnablePerson();
+                    Person personScript = person.GetComponent<Person>();
 
-            personList.Add(person.transform);
+                    personScript.ForceAnimation(0);
+                    personScript.involvedInDoubleMeg = true;
+                    personScript.SetPerson();
 
-            person.transform.position = position;
-            person.transform.rotation = spawner.rotation;
-            person.name = clones.ToString();
+                    // makes persons spawn in different spawners
+                    spawner = spawnerContainer.GetChild(i);
+                    
+                    position = new Vector3(spawner.position.x + (spawner.position.x < 0 ? + 0.5f : - 0.5f), spawner.position.y, spawner.position.z);
+                    
+                    //Debug.Log("Double meg");
 
-            StartCoroutine(DisablePerson(person, 6));
+                    personList.Add(person.transform);
 
-            lastSpawnTime = Time.time;
-            clones++;
-            spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
+                    person.transform.position = position;
+                    person.transform.rotation = spawner.rotation;
+                    person.name = clones.ToString();
+
+                    StartCoroutine(DisablePerson(person, 8));
+
+                    lastSpawnTime = Time.time;
+                    clones++;
+                    spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
+                }              
+            } else
+            {
+                GameObject person = objectPooler.EnablePerson();
+                Person personScript = person.GetComponent<Person>();
+
+                personScript.SetPerson();
+
+                personList.Add(person.transform);
+
+                person.transform.position = position;
+                person.transform.rotation = spawner.rotation;
+                person.name = clones.ToString();
+                person.GetComponent<Person>().involvedInDoubleMeg = false;
+
+                StartCoroutine(DisablePerson(person, 6));
+
+                lastSpawnTime = Time.time;
+                clones++;
+                spawnRate = Random.Range(minSpawnRate, maxSpawnRate);
+            }
+
+            
         }
     }
     

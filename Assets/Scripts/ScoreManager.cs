@@ -47,6 +47,10 @@ public class ScoreManager : MonoBehaviour
     bool setGameOverScreen = false;
 
     An3Apps.Data data;
+
+    float lastMegTime;
+    bool lastDirectionWasLeft;
+
     private void Awake()
     {
         gameManager = FindObjectOfType<MyGameManager>();
@@ -200,26 +204,42 @@ public class ScoreManager : MonoBehaviour
         //float textSize = 1 - ((Camera.main.transform.position - ballPos).magnitude / 10);
 
         //textSize = Mathf.Clamp(textSize, 0.7f, 1f);
-        Vector3 spawnPos = Camera.main.WorldToScreenPoint(ballPos + Vector3.right / 8); 
+        Vector3 spawnPos = Camera.main.WorldToScreenPoint(ballPos + Vector3.right / 8);
 
-        GameObject text = Instantiate(floatingTextPrefab, spawnPos , Quaternion.identity, canvas);
+        GameObject text = Instantiate(floatingTextPrefab, spawnPos, Quaternion.identity, canvas);
 
-        if (spawnPos.x > Screen.width / 2)
+
+        if (Time.time - lastMegTime < 0.2f)
         {
-            // spawn text that moves right
-            //SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
-            text.GetComponent<Animator>().SetTrigger("Left");
-        }
-        //else
-        //{
-        //    // spawn text that moves right
-        //    SceneManager.Instance.uiAnimationManager.PointsAnimation(false, text);
-        //}
+            if (!lastDirectionWasLeft)
+            {
+                text.GetComponent<Animator>().SetTrigger("Left");
+                lastDirectionWasLeft = true;
+            } else
+            {
+                lastDirectionWasLeft = false;
+            }
+        } else
+        {
+            if (spawnPos.x > Screen.width / 2)
+            {
+                // spawn text that moves right
+                //SceneManager.Instance.uiAnimationManager.PointsAnimation(true, text);
+                text.GetComponent<Animator>().SetTrigger("Left");
+                lastDirectionWasLeft = true;
+            }
+            else
+            {
+                lastDirectionWasLeft = false;
+            }
+        } 
 
-        text.transform.localScale = new Vector3(1, 1, 1);
+
+        text.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
         text.GetComponentInChildren<TextMeshProUGUI>().text = "+" + pointsAdded.ToString();
         Destroy(text, 5);
+        lastMegTime = Time.time;
     }
 
 }

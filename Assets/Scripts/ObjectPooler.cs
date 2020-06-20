@@ -10,7 +10,7 @@ public class ObjectPooler : MonoBehaviour
     public GameObject ballPrefab;
 
     List<GameObject> spawnedPersonsList = new List<GameObject>();
-    public int startingPersonsNumber = 5;
+    int startingPersonsNumber = 1;
     public GameObject personPrefab;
 
     public static ObjectPooler Instance;

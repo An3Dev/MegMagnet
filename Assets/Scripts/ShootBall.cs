@@ -47,7 +47,7 @@ public class ShootBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxDistForSwipe = (Screen.height / 8 * 5);
+        maxDistForSwipe = (Screen.height / 100 * 98);
         minDistForSwipe = Screen.height / 20;
 
         if (!gameManager.play)

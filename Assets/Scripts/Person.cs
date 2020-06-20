@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Person : MonoBehaviour
 {
@@ -32,7 +30,9 @@ public class Person : MonoBehaviour
 
     float animationIndex;
 
-    public float minWalkingSpeed, maxWalkingSpeed;
+    public bool involvedInDoubleMeg = false;
+
+    public GameObject doubleMegObject;
 
     private void Awake()
     {
@@ -48,8 +48,35 @@ public class Person : MonoBehaviour
         personRenderer.SetPropertyBlock(block);
     }
 
-    void OnEnable()
+    public void ForceAnimation(int index)
     {
+        animator.SetTrigger(index.ToString());
+        animator.SetTrigger(index.ToString());
+        animator.SetTrigger(index.ToString());
+        animator.SetTrigger(index.ToString());
+
+        animationIndex = index;
+        walkingSpeed = 1;
+    }
+
+    public void SetPerson()
+    {
+        mainCamera = Camera.main;
+        Instance = this;
+        EnableRagdoll(false, transform);
+
+        startingMaterials = personRenderer.materials;
+
+        ChangeMaterials();
+
+        if (involvedInDoubleMeg)
+        {
+            doubleMegObject.SetActive(true);
+            return;
+        }
+
+        doubleMegObject.SetActive(false);
+
         walkingSpeed = 1;
         //walkingSpeed = Random.Range(minWalkingSpeed, maxWalkingSpeed);
         //animator.SetFloat("Speed", walkingSpeed);
@@ -119,50 +146,17 @@ public class Person : MonoBehaviour
             walkingSpeed = 0.75f;
         }
 
-        //animationIndex = 0;
         animator.SetTrigger(animationIndex.ToString());
-        
-        //animationComponent.Play(animationComponent.clip)
-
-        mainCamera = Camera.main;
-        Instance = this;
-        EnableRagdoll(false, transform);
-
-        startingMaterials = personRenderer.materials;
-
-        ChangeMaterials();
 
     }
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-    //    walkingSpeed = 1;
-    //    //walkingSpeed = Random.Range(minWalkingSpeed, maxWalkingSpeed);
-    //    animator.SetFloat("Speed", walkingSpeed);
-    //    animator.SetFloat("AnimationIndex", 2);
 
-    //    mainCamera = Camera.main;
-    //    Instance = this;
-    //    EnableRagdoll(false, transform);
-
-
-    //    startingMaterials = personRenderer.materials;
-
-    //    ChangeMaterials();
-
-
-    //    //int randomColor = Random.Range(0, shirtColors.Length - 1);
-
-    //    //// You can re-use this block between calls rather than constructing a new one each time.
-    //    //var block = new MaterialPropertyBlock();
-
-    //    //// You can look up the property by ID instead of the string to be more efficient.
-    //    //block.SetColor("_BaseColor", shirtColors[randomColor]);
-
-    //    //// You can cache a reference to the renderer to avoid searching for it.
-    //    //GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, 3);
-
-    //}
+    private void Update()
+    {
+        if(!involvedInDoubleMeg && doubleMegObject.activeInHierarchy)
+        {
+            doubleMegObject.SetActive(false);
+        }
+    }
 
     void ChangeMaterials()
     {
@@ -182,7 +176,6 @@ public class Person : MonoBehaviour
                 // You can look up the property by ID instead of the string to be more efficient.
                 block.SetColor("_BaseColor", shirtColors[randomColor]);
 
-                // You can cache a reference to the renderer to avoid searching for it.
                 GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
 
                 //Debug.Log("New: " + newMaterial.color);
@@ -248,23 +241,6 @@ public class Person : MonoBehaviour
                 EnableRagdoll(enable, child);
             }
         }
-    }
-
-
-
-    private void LateUpdate()
-    {
-        //Vector2 viewportPoint = mainCamera.WorldToViewportPoint(transform.position);
-        // if object is outside of the camera view.
-        //if (viewportPoint.x > 1.1f 
-        //    || viewportPoint.x < -1.1f
-        //        || viewportPoint.y > 1.1f
-        //            || viewportPoint.y < -1.1f)
-        //{
-        //    megTrigger.enabled = true;
-        //    transform.position = startingPosition;
-        //}
-
     }
 
     private void FixedUpdate()

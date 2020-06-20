@@ -105,6 +105,8 @@ public class Ball : MonoBehaviour
     {
         fadeAway = false;
         wasKicked = false;
+        numOfMegs = 0;
+        numOfCollisions = 0;
         gameObject.SetActive(false);
     }
 
@@ -131,6 +133,11 @@ public class Ball : MonoBehaviour
         numOfCollisions = 0;
 
         //Debug.Break();
+    }
+
+    void ResetTimeScale()
+    {
+        gameManager.timeScale = 1;
     }
 
     private void OnCollisionEnter(Collision collision)

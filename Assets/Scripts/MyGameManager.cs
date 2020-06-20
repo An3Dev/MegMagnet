@@ -23,7 +23,7 @@ public class MyGameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Time.timeScale = timeScale;
+        //Time.timeScale = timeScale;
         if (!play)
         {
             if (Input.GetMouseButton(0))
