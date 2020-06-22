@@ -214,7 +214,6 @@ public class Person : MonoBehaviour
                 block = new MaterialPropertyBlock();
 
                 block.SetColor("_BaseColor", skinColors[randomColor]);
-
                 
                 GetComponentInChildren<SkinnedMeshRenderer>().SetPropertyBlock(block, i);
             }

@@ -39,6 +39,14 @@ public class ShootBall : MonoBehaviour
 
     public List<Transform> ballsList;
 
+    [SerializeField] GameObject trajectoryBallPrefab;
+    int numberOfTrajectoryBalls = 6;
+    float trajectoryBallGap = 1f;
+
+    float maxTrajectoryBallSize = 0.4f;
+    float minTrajectoryBallSize = 0.1f;
+
+    List<GameObject> trajectoryBallsList;
     private void Awake()
     {
         gameManager = FindObjectOfType<MyGameManager>();
@@ -47,14 +55,23 @@ public class ShootBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxDistForSwipe = (Screen.height / 100 * 98);
-        minDistForSwipe = Screen.height / 20;
+        maxDistForSwipe = (Screen.height / 10 * 7);
+        minDistForSwipe = Screen.height / 35;
+
+        trajectoryBallsList = new List<GameObject>();
+
+        // spawn trajectory balls
+        for(int i = 0; i < numberOfTrajectoryBalls; i++)
+        {
+            GameObject ball = Instantiate(trajectoryBallPrefab) as GameObject;
+            ball.SetActive(false);
+            trajectoryBallsList.Add(ball);
+        }
 
         if (!gameManager.play)
         {
             return;
         }
-
         PlaceBall();
     }
 
@@ -115,12 +132,44 @@ public class ShootBall : MonoBehaviour
             firstTouchPos = Input.mousePosition;
         }
 
+        if (Input.GetMouseButton(0))
+        {
+            Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
+            Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);
+
+            float swipeDist = (Input.mousePosition - firstTouchPos).magnitude;
+
+            int tempAmount = Mathf.CeilToInt(numberOfTrajectoryBalls * (swipeDist / maxDistForSwipe));
+            for (int i = 0; i < trajectoryBallsList.Count; i++)
+            {
+                if (i < tempAmount)
+                {
+                    trajectoryBallsList[i].transform.position = placementPoint.position + flatDirection * i * trajectoryBallGap + flatDirection;
+                    float scale = maxTrajectoryBallSize - ((maxTrajectoryBallSize - minTrajectoryBallSize) / trajectoryBallsList.Count * (i + 1));
+                    trajectoryBallsList[i].transform.localScale = new Vector3(scale, scale, scale);
+                    Renderer renderer = trajectoryBallsList[i].GetComponent<Renderer>();
+                    renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, 1 - ((i + 1) / tempAmount));
+                    trajectoryBallsList[i].SetActive(true);
+
+                } else
+                {
+                    trajectoryBallsList[i].SetActive(false);
+                }
+
+            }
+        }
+
         // If click released, shoot ball 
         if (Input.GetMouseButtonUp(0) && ballIsReady)
         {
             float swipeDist = (Input.mousePosition - firstTouchPos).magnitude;
 
             ballsList.Add(placedBall.transform);
+
+            for (int i = 0; i < trajectoryBallsList.Count; i++)
+            {
+                trajectoryBallsList[i].SetActive(false);
+            }
 
             placedBall.name = "SoccerBall#" + ballsList.Count;
             // if swipe is too short, return
@@ -138,16 +187,14 @@ public class ShootBall : MonoBehaviour
 
             float normalizedDist = swipeDist / maxDistForSwipe;
 
-            normalizedDist = Mathf.Clamp(normalizedDist, 0.01f, 0.9f);
+            //normalizedDist = Mathf.Clamp(normalizedDist, 0.01f, 0.9f);
 
-            normalizedDist = forceCurve.Evaluate(normalizedDist);
+            //normalizedDist = forceCurve.Evaluate(normalizedDist);
 
             float normalizedTime = (0.25f - (Time.timeSinceLevelLoad - firstTouchTime)) * 0.1f;
             normalizedTime = Mathf.Clamp(normalizedTime, 0.01f, 0.2f);
 
-            float normalizedForce = normalizedTime + normalizedDist;
-
-
+            float normalizedForce = /*normalizedTime + */normalizedDist;
 
             Vector3 force = flatDirection * maxBallSpeed * normalizedForce;
 

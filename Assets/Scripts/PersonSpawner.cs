@@ -76,7 +76,7 @@ public class PersonSpawner : MonoBehaviour
                     person.transform.rotation = spawner.rotation;
                     person.name = clones.ToString();
 
-                    StartCoroutine(DisablePerson(person, 8));
+                    StartCoroutine(DisablePerson(person, 10));
 
                     lastSpawnTime = Time.time;
                     clones++;
@@ -96,7 +96,7 @@ public class PersonSpawner : MonoBehaviour
                 person.name = clones.ToString();
                 person.GetComponent<Person>().involvedInDoubleMeg = false;
 
-                StartCoroutine(DisablePerson(person, 6));
+                StartCoroutine(DisablePerson(person, 10));
 
                 lastSpawnTime = Time.time;
                 clones++;
