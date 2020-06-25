@@ -18,7 +18,7 @@ public class MegDetection : MonoBehaviour
 
     bool startedMeg = false;
 
-    float megDistance = 0.5f;
+    float megDistance = 1f;
 
     Vector3 megStartPos;
 
@@ -38,7 +38,7 @@ public class MegDetection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -60,7 +60,7 @@ public class MegDetection : MonoBehaviour
             Vector3 ballPos = transform.position;
 
             // finds the closest person to the ball
-            foreach(Transform person in personList)
+            foreach (Transform person in personList)
             {
                 if ((ballPos - person.position).sqrMagnitude < closestDistanceSquared)
                 {
@@ -68,7 +68,7 @@ public class MegDetection : MonoBehaviour
                     closestDistanceSquared = (ballPos - person.position).sqrMagnitude;
                 }
             }
-       
+
             // if the closest person changed
             if (tempClosestPerson != closestPerson)
             {
@@ -80,14 +80,14 @@ public class MegDetection : MonoBehaviour
                 rightFoot = personScript.Instance.rightFoot;
                 startedMeg = false;
             }
-        
-        
+
+
             // if close enough to the person 
             if (closestDistanceSquared <= megDistance * megDistance)
             {
                 // if ball is in between feet and the ball hasn't started megging somebody
                 if (((ballPos.x < leftFoot.position.x && ballPos.x > rightFoot.position.x) || (ballPos.x > leftFoot.position.x && ballPos.x < rightFoot.position.x)) && !startedMeg)
-                {           
+                {
                     startedMeg = true;
                     megStartPos = ballPos;
 
@@ -95,7 +95,8 @@ public class MegDetection : MonoBehaviour
                     if (ballPos.z < closestPerson.position.z)
                     {
                         megStartedCloserToCamera = true;
-                    } else
+                    }
+                    else
                     {
                         megStartedCloserToCamera = false;
                     }
@@ -103,18 +104,16 @@ public class MegDetection : MonoBehaviour
                     if (leftFoot.transform.position.z < rightFoot.transform.position.z)
                     {
                         leftFootIsCloserToCam = true;
-                    } else
+                    }
+                    else
                     {
                         leftFootIsCloserToCam = false;
                     }
-                    //// if the ball started on the left side of the person.
-                    //if (ballPos.z - leftFoot.position.z < ballPos.z - rightFoot.position.z)
-                    //{
 
-                    //}
-                    Debug.Log("started meg for " + closestPerson);
+                    //Debug.Log("started meg for " + closestPerson);
                 }
-            } else if (startedMeg)
+            }
+            else if (startedMeg)
             {
                 startedMeg = false;
 
@@ -125,7 +124,7 @@ public class MegDetection : MonoBehaviour
             if (startedMeg /*&& (ballPos.x < leftFoot.position.x && ballPos.x > rightFoot.position.x) || (ballPos.x > leftFoot.position.x && ballPos.x < rightFoot.position.x)*/)
             {
                 //Time.timeScale = 0.1f;
-               
+
                 // if the ball is going away from the camera
                 if (megStartedCloserToCamera)
                 {
@@ -146,7 +145,7 @@ public class MegDetection : MonoBehaviour
                         //Debug.Log("Meg, facing right, passed left foot, away from cam");
                         Time.timeScale = 1;
                     }
-                } 
+                }
                 // if the ball is going toward the camera
                 else if (!megStartedCloserToCamera)
                 {

@@ -55,7 +55,7 @@ public class ShootBall : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        maxDistForSwipe = (Screen.height / 10 * 7);
+        maxDistForSwipe = (Screen.height / 2);
         minDistForSwipe = Screen.height / 35;
 
         trajectoryBallsList = new List<GameObject>();
@@ -126,13 +126,13 @@ public class ShootBall : MonoBehaviour
         }
 
         // if clicked for first time
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !gameManager.settingsPanel.activeInHierarchy)
         {
             firstTouchTime = Time.timeSinceLevelLoad;
             firstTouchPos = Input.mousePosition;
         }
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && !gameManager.settingsPanel.activeInHierarchy)
         {
             Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
             Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);
@@ -160,7 +160,7 @@ public class ShootBall : MonoBehaviour
         }
 
         // If click released, shoot ball 
-        if (Input.GetMouseButtonUp(0) && ballIsReady)
+        if (Input.GetMouseButtonUp(0) && ballIsReady && !gameManager.settingsPanel.activeInHierarchy)
         {
             float swipeDist = (Input.mousePosition - firstTouchPos).magnitude;
 

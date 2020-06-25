@@ -17,7 +17,8 @@ public class FPS : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Application.targetFrameRate = 120;
+        QualitySettings.vSyncCount = 0;
         text.text = (1 / Time.deltaTime).ToString("0");
     }
 }
