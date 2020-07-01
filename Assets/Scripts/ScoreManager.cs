@@ -68,33 +68,38 @@ public class ScoreManager : MonoBehaviour
         ResetGame();
     }
 
+    public void SetGameOverScreenUI ()
+    {
+        // if player beat their high score
+        if (megScore > data.GetHighScore())
+        {
+            data.SetHighScore(megScore);
+
+            gameOverHighScoreText.SetActive(true);
+        }
+        else
+        {
+            gameOverHighScoreText.SetActive(false);
+        }
+
+        // show score
+        gameOverScoreText.text = megScore.ToString();
+        setGameOverScreen = true;
+    }
+
     private void Update()
     {
 
         if (gameManager.gameOver && !setGameOverScreen)
         {
-            gameOverUI.SetActive(true);
-            gameplayUI.SetActive(false);
-            startUI.SetActive(false);
-
-            // if player beat their high score
-            if (megScore > data.GetHighScore())
-            {
-                data.SetHighScore(megScore);
-
-                gameOverHighScoreText.SetActive(true);
-            }
-            else
-            {
-                gameOverHighScoreText.SetActive(false);
-            }
-
-            // show score
-            gameOverScoreText.text = megScore.ToString();
-            setGameOverScreen = true;
+            //gameOverUI.SetActive(true);
+            //gameplayUI.SetActive(false);
+            //startUI.SetActive(false);
+            SetGameOverScreenUI();
+            
         }
         // continuously update just in case a ball goes through legs while in the game over screen
-        if (gameManager.gameOver)
+        if (gameManager.gameOver || !gameManager.play)
         {
             gameOverScoreText.text = megScore.ToString();
         }
@@ -148,7 +153,7 @@ public class ScoreManager : MonoBehaviour
         ResetGame();
     }
 
-    void ResetGame()
+    public void ResetGame()
     {
         timeLeft = maxTime;
         gameManager.gameOver = false;

@@ -10,7 +10,7 @@ public class FPS : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        Application.targetFrameRate = 120;
+        Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
     }
 

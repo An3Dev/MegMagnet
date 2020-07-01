@@ -40,7 +40,7 @@ public class PersonSpawner : MonoBehaviour
     {
         //if (!gameManager.play && !gameManager.gameOver) return;
 
-        if (Time.time - lastSpawnTime >= spawnRate)
+        if (Time.time - lastSpawnTime >= spawnRate && gameManager.play)
         {
             bool doubleMeg = Random.Range(0, 100) <= doubleMegProbability;
 
@@ -105,6 +105,14 @@ public class PersonSpawner : MonoBehaviour
 
             
         }
+
+        //if (!gameManager.play)
+        //{
+        //    foreach(Transform person in personList)
+        //    {
+        //        person.gameObject.SetActive(false);
+        //    }
+        //}
     }
     
     IEnumerator DisablePerson(GameObject person, float delayTime)

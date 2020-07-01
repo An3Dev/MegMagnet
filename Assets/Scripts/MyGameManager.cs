@@ -6,6 +6,8 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using System;
 using ShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution;
+using UnityEngine.Rendering;
+
 public class MyGameManager : MonoBehaviour
 {
 
@@ -29,6 +31,7 @@ public class MyGameManager : MonoBehaviour
     public Toggle shadowsToggle;
     public Toggle antiAliasingToggle;
     public Button lowPresetBtn, mediumPresetBtn, highPresetBtn;
+    public Toggle postProcessingToggle;
     public GameObject fpsGameObject;
 
     SROptions options;
@@ -37,11 +40,26 @@ public class MyGameManager : MonoBehaviour
     bool castShadows;
     bool antiAliasing = true;
     string graphicsPreset;
+    bool postProcessing;
     bool showFPS = false;
 
     Camera mainCamera;
     UniversalAdditionalCameraData cameraData;
+    public ScoreManager scoreManager;
 
+    bool inShop = false;
+
+    public GameObject shopUI;
+
+    public GameObject gameOverUI;
+
+    const string graphicsPresetName = "GraphicsPresets";
+    const string renderScaleName = "RenderScale";
+    const string castShadowsName = "CastShadows";
+    const string antiAliasingName = "AntiAliasing";
+    const string showFPSName = "ShowFPS";
+    const string postProcessingName = "PostProcessing";
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -50,12 +68,13 @@ public class MyGameManager : MonoBehaviour
         cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
         currentPipelineAsset = UniversalRenderPipeline.asset;
 
-        graphicsPreset = PlayerPrefs.GetString("GraphicsPresets", "High");
+        graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "High");
 
-        renderScale = PlayerPrefs.GetFloat("RenderScale", 1);
-        castShadows = bool.Parse(PlayerPrefs.GetString("CastShadows", "true"));
-        antiAliasing = bool.Parse(PlayerPrefs.GetString("AntiAliasing", "true"));
-        showFPS = bool.Parse(PlayerPrefs.GetString("ShowFPS", "false"));
+        renderScale = PlayerPrefs.GetFloat(renderScaleName, 1);
+        castShadows = bool.Parse(PlayerPrefs.GetString(castShadowsName, "true"));
+        antiAliasing = bool.Parse(PlayerPrefs.GetString(antiAliasingName, "true"));
+        showFPS = bool.Parse(PlayerPrefs.GetString(showFPSName, "false"));
+        postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "true"));
 
         if (graphicsPreset == "Low")
         {
@@ -74,6 +93,8 @@ public class MyGameManager : MonoBehaviour
 
         cameraData.renderShadows = castShadows;
 
+        cameraData.renderPostProcessing = postProcessing;
+
         if (antiAliasing)
         {
             cameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
@@ -82,6 +103,24 @@ public class MyGameManager : MonoBehaviour
         {
             cameraData.antialiasing = AntialiasingMode.None;
         }
+    }
+
+    public void EnablePostProcessing(bool enable)
+    {
+        postProcessing = enable;
+        cameraData.renderPostProcessing = postProcessing;
+    }
+
+    public void EnableShopUI(bool enable)
+    {
+        scoreManager.ResetGame();
+        //play = !enable;
+        //shopUI.SetActive(enable);
+        //gameOverUI.SetActive(!enable);
+        //scoreManager.SetGameOverScreenUI();
+
+        // go to shop screen
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Shop");
     }
 
     void UpdateUI()
@@ -108,6 +147,7 @@ public class MyGameManager : MonoBehaviour
             shadowsToggle.isOn = false;
         }
 
+        cameraData.renderPostProcessing = postProcessing;
         antiAliasingToggle.isOn = antiAliasing;
 
         fpsGameObject.SetActive(showFPS);
@@ -121,15 +161,16 @@ public class MyGameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Time.timeScale = timeScale;
-        if (!play)
+        if (gameOver)
         {
-            if (Input.GetMouseButton(0))
-            {
-                play = true;
-            }
-            return;
+            gameOverUI.SetActive(true);
         }
+    }
+
+    public void ContinueGame()
+    {
+        play = true;
+        gameOverUI.SetActive(false);
     }
 
     public void ChangeRenderScale(float value)
@@ -180,27 +221,37 @@ public class MyGameManager : MonoBehaviour
     {
         ShadowResolution resolution = (ShadowResolution) Enum.Parse(Type.GetType(typeof(ShadowResolution).Name), "test");
         options.MainLightShadowResolution = resolution;
-        UpdateUI();
-
+        UpdateUI();    
     }
 
-    public void OpenSettings()
+    public void StopGame()
     {
-        settingsPanel.SetActive(true);
-        UpdateUI();
-
+        play = false;
+        gameOverUI.SetActive(true);
     }
 
-    public void CloseSettings()
+    public void OpenSettings(bool enable)
     {
-        settingsPanel.SetActive(false);
+        settingsPanel.SetActive(enable);
+        if (shopUI.activeInHierarchy && enable)
+        {
+            shopUI.SetActive(false);
+        }
 
-        PlayerPrefs.SetString("GraphicsPresets", graphicsPreset);
+        if (!enable)
+        { 
+            PlayerPrefs.SetString("GraphicsPresets", graphicsPreset);
 
-        PlayerPrefs.SetFloat("RenderScale", renderScale);
-        PlayerPrefs.SetString("CastShadows", castShadows.ToString());
-        PlayerPrefs.SetString("AntiAliasing", antiAliasing.ToString());
-        PlayerPrefs.SetString("ShowFPS", showFPS.ToString());
+            PlayerPrefs.SetFloat(renderScaleName, renderScale);
+            PlayerPrefs.SetString(castShadowsName, castShadows.ToString());
+            PlayerPrefs.SetString(antiAliasingName, antiAliasing.ToString());
+            PlayerPrefs.SetString(showFPSName, showFPS.ToString());
+            PlayerPrefs.SetString(postProcessingName, postProcessing.ToString());
+        } else
+        {
+            UpdateUI();
+        }
+        
     }
 
     public void StartTime()
