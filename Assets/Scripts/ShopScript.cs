@@ -18,20 +18,22 @@ public class ShopScript : MonoBehaviour
     //List<string> ownedItemsList = new List<string>();
     string[] ownedItemsList;
 
-    int playerCurrency;
-    private const string playerCurrencyKey = "PlayerCurrency";
+    public static int playerCurrency;
+    public const string playerCurrencyKey = "PlayerCurrency";
 
     public TextMeshProUGUI moneyText;
 
     public int startingBallCost = 25;
     public int numOfBallsBeforeCostIncrease = 3;
-    public float costIncrease = 10; 
+    public float costIncrease = 25; 
     private void Start()
     {
         equippedBallIndex = PlayerPrefs.GetInt(equippedBallKey, 0);
         playerCurrency = PlayerPrefs.GetInt(playerCurrencyKey, 0);
+        PlayerPrefs.DeleteAll();
+        playerCurrency = 10000;
 
-        moneyText = "$" + playerCurrency;
+        moneyText.text = "$" + playerCurrency;
         ownedItems = PlayerPrefs.GetString(ownedItemsKey, "Classic");
         // take away spaces
         ownedItems.Replace(" ", "");
@@ -41,15 +43,15 @@ public class ShopScript : MonoBehaviour
         foreach(GameObject ball in ballPrefabList)
         {
             ballsList.Add(GameObject.Find(ball.name));
-            Debug.Log(ball);
         }
 
-        foreach (GameObject ball in ballsList)
+        for(int i = 0; i < ballsList.Count(); i++)
         {
-            for(int i = 0; i < ownedItemsList.Count(); i++)
+            GameObject ball = ballsList[i].gameObject;
+            for (int x = 0; x < ownedItemsList.Count(); x++)
             {
                 // if this ball is owned
-                if (ball.name == ownedItemsList[i])
+                if (ball.name == ownedItemsList[x])
                 {
                     // remove the buy button so that they don't buy it again
                     //ball.transform.Find("BuyButton").gameObject.SetActive(false);
@@ -61,13 +63,15 @@ public class ShopScript : MonoBehaviour
                         ball.transform.Find("Canvas/EquipButton").gameObject.GetComponent<Button>().interactable = false;
                         ball.transform.Find("Canvas/EquipButton/EquipText").gameObject.GetComponent<TextMeshProUGUI>().text = "Equipped";
                     }
-                } else
-                {
-                    // set button price
                 }
-            }      
-        }
+                else // if this ball is not owned
+                {
+                    int cost = Mathf.RoundToInt(startingBallCost + i / numOfBallsBeforeCostIncrease * costIncrease);
 
+                    ball.transform.Find("Canvas/BuyButton/BuyButtonText").GetComponent<TextMeshProUGUI>().text = "$" + cost;
+                }
+            }
+        }
         // set the equipped button
         for (int i = 0; i < ballsList.Count(); i++)
         {
@@ -86,19 +90,31 @@ public class ShopScript : MonoBehaviour
     {
         if (!ownedItems.Contains(itemName))
         {
-            ownedItems += "," + itemName;
-
+            int cost = 0;
             for (int i = 0; i < ballsList.Count(); i++)
             {
                 GameObject ball = ballsList[i];
                 if (ball.name == itemName)
                 {
-                    ball.transform.Find("Canvas/BuyButton").gameObject.GetComponent<Button>().gameObject.SetActive(false);
+                    cost = Mathf.RoundToInt(startingBallCost + i / numOfBallsBeforeCostIncrease * costIncrease);
+
+                    if (playerCurrency >= cost)
+                    {
+                        ball.transform.Find("Canvas/BuyButton").gameObject.GetComponent<Button>().gameObject.SetActive(false);
+                        playerCurrency -= cost;
+                    } else
+                    {
+                        return;
+                    }
                     break;
                 }
             }
 
+            ownedItems += "," + itemName;
+            moneyText.text = "$" + playerCurrency;
+
             PlayerPrefs.SetString(ownedItemsKey, ownedItems);
+            PlayerPrefs.SetInt(playerCurrencyKey, playerCurrency);
         }
     }
 
