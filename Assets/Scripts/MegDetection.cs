@@ -18,7 +18,7 @@ public class MegDetection : MonoBehaviour
 
     bool startedMeg = false;
 
-    float megDistance = 1f;
+    float megDistance = 1.5f;
 
     Vector3 megStartPos;
 
@@ -116,8 +116,6 @@ public class MegDetection : MonoBehaviour
             else if (startedMeg)
             {
                 startedMeg = false;
-
-                Debug.Log("Stopped meg");
                 Time.timeScale = 1;
             }
 

@@ -18,10 +18,15 @@ public class ShopCameraMovement : MonoBehaviour
     float maxDistance;
 
     float direction;
+    float distance;
+    public ShopScript shopScript;
+
+    public Vector3 startPos;
     // Start is called before the first frame update
     void Start()
     {
-        maxDistance = Screen.width / 5;
+        maxDistance = Screen.width / 7;
+        startPos = transform.position;
     }
 
     // Update is called once per frame
@@ -40,7 +45,7 @@ public class ShopCameraMovement : MonoBehaviour
             }
 
             mouseButtonUp = false;
-            float distance = Input.mousePosition.x - previousMousePos.x;
+            distance = Input.mousePosition.x - previousMousePos.x;
             distance = Mathf.Clamp(distance, -maxDistance, maxDistance);
             direction = Mathf.Clamp(distance, -1, 1);
             transform.position -= transform.right * (distance * speed);
@@ -54,9 +59,11 @@ public class ShopCameraMovement : MonoBehaviour
             }
             inertiaTimer += Time.deltaTime;
 
-            transform.position -= transform.right * (direction * speed * (maxInertiaTime - inertiaTimer) * inertiaValue);
+            transform.position -= (transform.right * (distance * speed)) * (1 - inertiaTimer / maxInertiaTime);
+            //transform.position -= (transform.right * (direction * speed * 1 + (distance / maxDistance) * inertiaValue)) * (maxInertiaTime - inertiaTimer);
         }
 
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, startPos.x, startPos.x + (shopScript.ballsList.Count - 3) * 2), transform.position.y, transform.position.z);
         if (Input.GetMouseButtonUp(0))
         {
             mouseButtonUp = true;

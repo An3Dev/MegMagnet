@@ -18,7 +18,10 @@ public class ObjectPooler : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        for(int i = 0; i < startingBallNumber; i++)
+
+        ballPrefab = Resources.Load("Balls/" + PlayerPrefs.GetString(ShopScript.equippedBallKey, "Classic").ToString()) as GameObject;
+
+        for (int i = 0; i < startingBallNumber; i++)
         {
             GameObject ball = Instantiate(ballPrefab);
             ball.SetActive(false);

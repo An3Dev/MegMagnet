@@ -50,6 +50,7 @@ public class ShootBall : MonoBehaviour
     private void Awake()
     {
         gameManager = FindObjectOfType<MyGameManager>();
+        ballPrefab = Resources.Load("Balls/" + PlayerPrefs.GetString(ShopScript.equippedBallKey, "Classic").ToString()) as GameObject;
     }
 
     // Start is called before the first frame update
@@ -146,8 +147,8 @@ public class ShootBall : MonoBehaviour
                     trajectoryBallsList[i].transform.position = placementPoint.position + flatDirection * i * trajectoryBallGap + flatDirection;
                     float scale = maxTrajectoryBallSize - ((maxTrajectoryBallSize - minTrajectoryBallSize) / trajectoryBallsList.Count * (i + 1));
                     trajectoryBallsList[i].transform.localScale = new Vector3(scale, scale, scale);
-                    Renderer renderer = trajectoryBallsList[i].GetComponent<Renderer>();
-                    renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, 1 - ((i + 1) / tempAmount));
+                    //Renderer renderer = trajectoryBallsList[i].GetComponent<Renderer>();
+                    //renderer.material.color = new Color(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b, 1 - ((i + 1) / tempAmount));
                     trajectoryBallsList[i].SetActive(true);
 
                 } else

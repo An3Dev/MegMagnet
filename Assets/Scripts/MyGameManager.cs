@@ -239,7 +239,7 @@ public class MyGameManager : MonoBehaviour
         }
 
         if (!enable)
-        { 
+        {
             PlayerPrefs.SetString("GraphicsPresets", graphicsPreset);
 
             PlayerPrefs.SetFloat(renderScaleName, renderScale);
@@ -250,8 +250,7 @@ public class MyGameManager : MonoBehaviour
         } else
         {
             UpdateUI();
-        }
-        
+        }     
     }
 
     public void StartTime()
