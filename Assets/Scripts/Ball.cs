@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-
     ScoreManager scoreManager;
 
     int numOfCollisions;
@@ -126,6 +125,8 @@ public class Ball : MonoBehaviour
         {
             scoreManager.UpdateScore(ScoreManager.MegType.ManyTouches, numOfMegs, transform.position);
         }
+
+        //scoreManager.ResetTime();
 
         megEnterTriggered = false;
         // Disable the meg collider

@@ -23,9 +23,10 @@ public class ScoreManager : MonoBehaviour
 
     public Transform canvas;
 
-    public int maxTime = 30;
+    int startTime = 15;
+    int startTimeDecrease = 1; // per meg
 
-    float timeLeft = 30;
+    float timeLeft = 10;
 
     MyGameManager gameManager;
 
@@ -51,19 +52,25 @@ public class ScoreManager : MonoBehaviour
     float lastMegTime;
     bool lastDirectionWasLeft;
 
+    int timesThatResetTime = 0;
+    float minimumResetTime = 5;
+
+    int currency;
+
     private void Awake()
     {
         gameManager = FindObjectOfType<MyGameManager>();
         data = transform.gameObject.AddComponent<An3Apps.Data>();
+        currency = PlayerPrefs.GetInt(ShopScript.playerCurrencyKey, 25);
     }
 
     void Start()
     {
-        timeLeft = maxTime;
+        timeLeft = startTime;
 
         Instance = this;
         canvas = GameObject.Find("Canvas").transform;
-        timerText.text = maxTime.ToString();
+        timerText.text = startTime.ToString();
 
         ResetGame();
     }
@@ -96,7 +103,7 @@ public class ScoreManager : MonoBehaviour
             //gameplayUI.SetActive(false);
             //startUI.SetActive(false);
             SetGameOverScreenUI();
-            
+            PlayerPrefs.SetInt(ShopScript.playerCurrencyKey, currency);
         }
         // continuously update just in case a ball goes through legs while in the game over screen
         if (gameManager.gameOver || !gameManager.play)
@@ -115,7 +122,7 @@ public class ScoreManager : MonoBehaviour
         {
             scaledTimer = true;
             timerText.transform.localScale = Vector3.one;
-            float scale = 1.05f + (maxScaleOfTimer - 1) * scaleCurve.Evaluate((maxTime - timeLeft) / maxTime);
+            float scale = 1.05f + (maxScaleOfTimer - 1) * scaleCurve.Evaluate((startTime - timeLeft) / startTime);
             PlayTimerAnimation(new Vector3(scale, scale, scale));
         } else if (scaledTimer)
         {
@@ -140,8 +147,6 @@ public class ScoreManager : MonoBehaviour
                 timerText.text = "0";
             }
         }
-
-        
     }
 
     public void StartGame()
@@ -155,7 +160,7 @@ public class ScoreManager : MonoBehaviour
 
     public void ResetGame()
     {
-        timeLeft = maxTime;
+        timeLeft = startTime;
         gameManager.gameOver = false;
         gameManager.play = true;
 
@@ -167,12 +172,33 @@ public class ScoreManager : MonoBehaviour
         // reset the score
         megScore = 0;
 
+        timesThatResetTime = 0;
         highScoreText.text = "Best: " + data.GetHighScore().ToString();
-
 
         setGameOverScreen = false;
     }
 
+    public void ResetTime()
+    {
+        bool doubleMeg = false;
+        if(Time.time - lastMegTime < 0.2f)
+        {
+            doubleMeg = true;
+        }
+
+        if (doubleMeg)
+        {
+            timesThatResetTime -= 2; // minus two because the first meg increased this value by one
+            Debug.Log("Double");
+        } else
+        {
+            timesThatResetTime++;
+            Debug.Log("Single");
+        }
+
+        timeLeft = startTime - timesThatResetTime * startTimeDecrease /*((timesThatResetTime * startTimeDecrease) >= minimumResetTime ? (timesThatResetTime * startTimeDecrease) : minimumResetTime)*/;
+        timeLeft = Mathf.Clamp(timeLeft, minimumResetTime, 20);
+    }
 
     void PlayTimerAnimation(Vector3 scale)
     {
@@ -183,7 +209,9 @@ public class ScoreManager : MonoBehaviour
     public void UpdateScore(MegType megType, int numOfMegs, Vector3 ballPos)
     {
         int valueAdded = 0;
-         
+
+        ResetTime();
+
         if (megType == MegType.Clean)
         {
             valueAdded = (int)(pointsPerMeg * ((numOfMegs - 1 > 0) ? ((numOfMegs - 1) * bonusAmount) : 1));
@@ -196,6 +224,8 @@ public class ScoreManager : MonoBehaviour
         {
             valueAdded = Mathf.CeilToInt(pointsPerMeg * manyTouchesReduction);
         }
+
+        currency += valueAdded;
 
         megScore += valueAdded;
         ShowFloatingText(ballPos, valueAdded);

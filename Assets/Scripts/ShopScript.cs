@@ -37,7 +37,7 @@ public class ShopScript : MonoBehaviour
         //PlayerPrefs.DeleteAll();
         //playerCurrency = 10000;
 
-        moneyText.text = "$" + playerCurrency;
+        moneyText.text = playerCurrency.ToString();
         ownedItems = PlayerPrefs.GetString(ownedItemsKey, "Classic");
         // take away spaces
         ownedItems.Replace(" ", "");
@@ -73,7 +73,7 @@ public class ShopScript : MonoBehaviour
                 {
                     //int cost = Mathf.RoundToInt(startingBallCost + i / numOfBallsBeforeCostIncrease * costIncrease);
                     int cost = ball.GetComponent<BallCost>().cost;
-                    ball.transform.Find("Canvas/BuyButton/BuyButtonText").GetComponent<TextMeshProUGUI>().text = "$" + cost;
+                    ball.transform.Find("Canvas/BuyButton/BuyButtonText").GetComponent<TextMeshProUGUI>().text = cost.ToString();
                 }
             }
         }
@@ -121,7 +121,7 @@ public class ShopScript : MonoBehaviour
             }
 
             ownedItems += "," + itemName;
-            moneyText.text = "$" + playerCurrency;
+            moneyText.text = playerCurrency.ToString();
 
             PlayerPrefs.SetString(ownedItemsKey, ownedItems);
             PlayerPrefs.SetInt(playerCurrencyKey, playerCurrency);
