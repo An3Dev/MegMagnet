@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+    using UnityEngine.EventSystems;
+
 
 public class ShootBall : MonoBehaviour
 {
@@ -46,17 +48,21 @@ public class ShootBall : MonoBehaviour
     float maxTrajectoryBallSize = 0.4f;
     float minTrajectoryBallSize = 0.1f;
 
+
     List<GameObject> trajectoryBallsList;
+
+    EventSystem eventSystem;
     private void Awake()
     {
         gameManager = FindObjectOfType<MyGameManager>();
         ballPrefab = Resources.Load("Balls/" + PlayerPrefs.GetString(ShopScript.equippedBallKey, "Classic").ToString()) as GameObject;
+        eventSystem = EventSystem.current;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        maxDistForSwipe = (Screen.height / 2);
+        maxDistForSwipe = (Screen.height / 5 * 2);
         minDistForSwipe = Screen.height / 35;
 
         trajectoryBallsList = new List<GameObject>();
@@ -126,13 +132,18 @@ public class ShootBall : MonoBehaviour
         }
 
         // if clicked for first time
-        if (Input.GetMouseButtonDown(0) && !gameManager.settingsPanel.activeInHierarchy)
+        if (Input.GetMouseButtonDown(0) && !gameManager.settingsPanel.activeInHierarchy && !gameManager.inSettings)
         {
             firstTouchTime = Time.timeSinceLevelLoad;
             firstTouchPos = Input.mousePosition;
         }
 
-        if (Input.GetMouseButton(0) && !gameManager.settingsPanel.activeInHierarchy)
+        if (gameManager.inSettings)
+        {
+            firstTouchPos = Input.mousePosition;
+        }
+
+        if (Input.GetMouseButton(0) && !gameManager.settingsPanel.activeInHierarchy && Time.timeScale > 0.2f)
         {
             Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
             Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);
@@ -160,7 +171,7 @@ public class ShootBall : MonoBehaviour
         }
 
         // If click released, shoot ball 
-        if (Input.GetMouseButtonUp(0) && ballIsReady && !gameManager.settingsPanel.activeInHierarchy)
+        if (Input.GetMouseButtonUp(0) && ballIsReady && !gameManager.settingsPanel.activeInHierarchy && !gameManager.inSettings)
         {
             float swipeDist = (Input.mousePosition - firstTouchPos).magnitude;
 
@@ -186,6 +197,8 @@ public class ShootBall : MonoBehaviour
             ballRb = placedBall.GetComponent<Rigidbody>();
 
             float normalizedDist = swipeDist / maxDistForSwipe;
+
+            normalizedDist = Mathf.Clamp(normalizedDist, 0, 1);
 
             //normalizedDist = Mathf.Clamp(normalizedDist, 0.01f, 0.9f);
 

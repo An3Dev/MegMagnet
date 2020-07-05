@@ -34,6 +34,8 @@ public class MyGameManager : MonoBehaviour
     public Toggle postProcessingToggle;
     public GameObject fpsGameObject;
 
+    public GameObject continueButton;
+
     SROptions options;
 
     float renderScale;
@@ -59,7 +61,11 @@ public class MyGameManager : MonoBehaviour
     const string antiAliasingName = "AntiAliasing";
     const string showFPSName = "ShowFPS";
     const string postProcessingName = "PostProcessing";
-    
+
+    public bool inSettings;
+
+    public GameObject[] objectsToDisableInSettings;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -105,6 +111,11 @@ public class MyGameManager : MonoBehaviour
         }
     }
 
+    public void GoToMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
+    }
+
     public void EnablePostProcessing(bool enable)
     {
         postProcessing = enable;
@@ -113,7 +124,8 @@ public class MyGameManager : MonoBehaviour
 
     public void EnableShopUI(bool enable)
     {
-        scoreManager.ResetGame();
+        if (scoreManager)
+            scoreManager.ResetGame();
         //play = !enable;
         //shopUI.SetActive(enable);
         //gameOverUI.SetActive(!enable);
@@ -121,6 +133,12 @@ public class MyGameManager : MonoBehaviour
 
         // go to shop screen
         UnityEngine.SceneManagement.SceneManager.LoadScene("Shop");
+    }
+
+    public void StartGame()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+
     }
 
     void UpdateUI()
@@ -156,6 +174,7 @@ public class MyGameManager : MonoBehaviour
     public void ToggleFPS(bool enable)
     {
         fpsGameObject.SetActive(enable);
+        showFPS = enable;
     }
 
     // Update is called once per frame
@@ -164,6 +183,7 @@ public class MyGameManager : MonoBehaviour
         if (gameOver)
         {
             gameOverUI.SetActive(true);
+            continueButton.SetActive(false);
         }
     }
 
@@ -171,6 +191,8 @@ public class MyGameManager : MonoBehaviour
     {
         play = true;
         gameOverUI.SetActive(false);
+        inSettings = false;
+        Time.timeScale = 1;
     }
 
     public void ChangeRenderScale(float value)
@@ -228,11 +250,32 @@ public class MyGameManager : MonoBehaviour
     {
         play = false;
         gameOverUI.SetActive(true);
+        inSettings = true;
+        continueButton.SetActive(true);
+
     }
 
     public void OpenSettings(bool enable)
     {
         settingsPanel.SetActive(enable);
+
+
+
+        for(int i = 0; i < objectsToDisableInSettings.Length; i++)
+        {
+            objectsToDisableInSettings[i].SetActive(!enable);
+        }
+        
+        inSettings = enable;
+        if (enable)
+        {
+            Time.timeScale = 0.01f;
+        } else
+        {
+            Time.timeScale = 1;
+        }
+
+        // if shop is active
         if (shopUI.activeInHierarchy && enable)
         {
             shopUI.SetActive(false);

@@ -91,9 +91,9 @@ public class ShopScript : MonoBehaviour
         }
     }
 
-    public void GoBackToGame()
+    public void GoToMenu()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
     public void Buy(string itemName)
     {

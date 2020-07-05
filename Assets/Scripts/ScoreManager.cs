@@ -189,11 +189,9 @@ public class ScoreManager : MonoBehaviour
         if (doubleMeg)
         {
             timesThatResetTime -= 2; // minus two because the first meg increased this value by one
-            Debug.Log("Double");
         } else
         {
             timesThatResetTime++;
-            Debug.Log("Single");
         }
 
         timeLeft = startTime - timesThatResetTime * startTimeDecrease /*((timesThatResetTime * startTimeDecrease) >= minimumResetTime ? (timesThatResetTime * startTimeDecrease) : minimumResetTime)*/;
