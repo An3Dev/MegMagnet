@@ -191,7 +191,10 @@ public class ScoreManager : MonoBehaviour
             timesThatResetTime -= 2; // minus two because the first meg increased this value by one
         } else
         {
-            timesThatResetTime++;
+            if ((startTime - timesThatResetTime * startTimeDecrease) > minimumResetTime)
+            {
+                timesThatResetTime++;
+            }
         }
 
         timeLeft = startTime - timesThatResetTime * startTimeDecrease /*((timesThatResetTime * startTimeDecrease) >= minimumResetTime ? (timesThatResetTime * startTimeDecrease) : minimumResetTime)*/;

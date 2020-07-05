@@ -138,7 +138,6 @@ public class MyGameManager : MonoBehaviour
     public void StartGame()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
-
     }
 
     void UpdateUI()
