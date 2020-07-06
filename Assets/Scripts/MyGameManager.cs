@@ -7,7 +7,10 @@ using UnityEngine.UI;
 using System;
 using ShadowResolution = UnityEngine.Rendering.Universal.ShadowResolution;
 using UnityEngine.Rendering;
-
+using GooglePlayGames.Android;
+using GooglePlayGames;
+using UnityEngine.SocialPlatforms;
+using GooglePlayGames.BasicApi;
 public class MyGameManager : MonoBehaviour
 {
 
@@ -69,6 +72,7 @@ public class MyGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
         Instance = this;
         mainCamera = Camera.main;
         cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
