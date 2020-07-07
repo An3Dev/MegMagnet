@@ -167,7 +167,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: an3apps.megmadness
   buildNumber: {}
-  AndroidBundleVersionCode: 2
+  AndroidBundleVersionCode: 3
   AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 0
@@ -244,7 +244,7 @@ PlayerSettings:
   AndroidTargetArchitectures: 3
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: E:/an3ma/Documents/Keystores/Keystore.keystore
+  AndroidKeystoreName: '{dedicated}: Keystore.keystore'
   AndroidKeyaliasName: keystore
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
@@ -762,10 +762,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: d7ab6ed6-c18c-44f0-85d3-b63b6ad1a869
+  cloudProjectId: a023993e-b021-44c7-b99f-b13bc9b2471b
   framebufferDepthMemorylessMode: 0
   projectName: MegMadness
-  organizationId: an3developer
+  organizationId: an3enterprises
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

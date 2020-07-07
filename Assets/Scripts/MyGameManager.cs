@@ -73,6 +73,18 @@ public class MyGameManager : MonoBehaviour
     void Start()
     {
         PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
+        PlayGamesPlatform.InitializeInstance(config);
+        // recommended for debugging:
+        PlayGamesPlatform.DebugLogEnabled = true;
+        // Activate the Google Play Games platform
+        PlayGamesPlatform.Activate();
+
+        PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (result) =>
+        {
+
+            Debug.Log(result);
+        });
+
         Instance = this;
         mainCamera = Camera.main;
         cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
@@ -117,6 +129,11 @@ public class MyGameManager : MonoBehaviour
 
     public void GoToMenu()
     {
+        if (scoreManager)
+        {
+            scoreManager.SaveScore();
+        }
+
         UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 
@@ -255,7 +272,10 @@ public class MyGameManager : MonoBehaviour
         gameOverUI.SetActive(true);
         inSettings = true;
         continueButton.SetActive(true);
-
+        if (scoreManager)
+        {
+            scoreManager.SaveScore();
+        }
     }
 
     public void OpenSettings(bool enable)
@@ -297,6 +317,11 @@ public class MyGameManager : MonoBehaviour
         {
             UpdateUI();
         }     
+    }
+
+    public void ShowLeaderboardUI()
+    {
+        PlayGamesPlatform.Instance.ShowLeaderboardUI(GPGSIds.leaderboard_most_megs_in_a_round);
     }
 
     public void StartTime()

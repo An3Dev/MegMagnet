@@ -103,7 +103,7 @@ public class ScoreManager : MonoBehaviour
             //gameplayUI.SetActive(false);
             //startUI.SetActive(false);
             SetGameOverScreenUI();
-            PlayerPrefs.SetInt(ShopScript.playerCurrencyKey, currency);
+            SaveScore();
         }
         // continuously update just in case a ball goes through legs while in the game over screen
         if (gameManager.gameOver || !gameManager.play)
@@ -147,6 +147,15 @@ public class ScoreManager : MonoBehaviour
                 timerText.text = "0";
             }
         }
+    }
+
+    public void SaveScore()
+    {
+        PlayerPrefs.SetInt(ShopScript.playerCurrencyKey, currency);
+        Social.ReportScore(megScore, GPGSIds.leaderboard_most_megs_in_a_round, (result) =>
+        {
+            Debug.Log(result);
+        });
     }
 
     public void StartGame()
