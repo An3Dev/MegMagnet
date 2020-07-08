@@ -14,6 +14,8 @@ public class MegDetection : MonoBehaviour
     Person personScript;
     Transform closestPerson;
 
+    Rigidbody rb;
+
     bool megStartedCloserToCamera = true;
 
     bool startedMeg = false;
@@ -154,8 +156,6 @@ public class MegDetection : MonoBehaviour
                         startedMeg = false;
                         //Debug.Log("Meg, facing left, passed left foot, toward cam");
                         Time.timeScale = 1;
-
-
                     }
                     // if the person is facing right and the ball passed their right foot
                     else if (!leftFootIsCloserToCam && ballPos.z <= rightFoot.position.z)

@@ -24,7 +24,12 @@
 
 public static class GPGSIds
 {
-        public const string leaderboard_most_megs_in_a_round = "CgkIrKOm6vMSEAIQAQ"; // <GPGSID>
+        public const string achievement_intermediate = "CgkI9faw0sUUEAIQBA"; // <GPGSID>
+        public const string achievement_advanced = "CgkI9faw0sUUEAIQBQ"; // <GPGSID>
+        public const string achievement_beginner = "CgkI9faw0sUUEAIQAw"; // <GPGSID>
+        public const string leaderboard_most_megs_in_a_round = "CgkI9faw0sUUEAIQAQ"; // <GPGSID>
+        public const string achievement_master = "CgkI9faw0sUUEAIQBg"; // <GPGSID>
+        public const string achievement_double_meg = "CgkI9faw0sUUEAIQBw"; // <GPGSID>
 
 }
 

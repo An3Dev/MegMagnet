@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using GooglePlayGames;
+using UnityEngine.SocialPlatforms;
 public class Ball : MonoBehaviour
 {
     ScoreManager scoreManager;
@@ -113,6 +114,23 @@ public class Ball : MonoBehaviour
     {
         numOfMegs++;
 
+        gameManager.IncreaseTotalMegsNum(numOfMegs > 1);
+
+        if (numOfMegs == 2)
+        {
+            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+            {
+                foreach (IAchievement thisAchievement in achievements)
+                {
+                    if (thisAchievement.id == GPGSIds.achievement_double_meg && !thisAchievement.completed)
+                    {
+                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_double_meg);
+                    }
+                    break;
+                }
+            });
+            
+        }
         if (numOfCollisions == 0)
         {
             scoreManager.UpdateScore(ScoreManager.MegType.Clean, numOfMegs, transform.position);

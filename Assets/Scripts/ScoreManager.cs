@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using An3Apps;
+using GooglePlayGames;
+using UnityEngine.SocialPlatforms;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -96,7 +98,6 @@ public class ScoreManager : MonoBehaviour
 
     private void Update()
     {
-
         if (gameManager.gameOver && !setGameOverScreen)
         {
             //gameOverUI.SetActive(true);
@@ -152,7 +153,11 @@ public class ScoreManager : MonoBehaviour
     public void SaveScore()
     {
         PlayerPrefs.SetInt(ShopScript.playerCurrencyKey, currency);
-        Social.ReportScore(megScore, GPGSIds.leaderboard_most_megs_in_a_round, (result) =>
+        //Social.ReportScore(megScore, GPGSIds.leaderboard_most_megs_in_a_round, (result) =>
+        //{
+        //    Debug.Log(result);
+        //});
+        PlayGamesPlatform.Instance.ReportScore(megScore, GPGSIds.leaderboard_most_megs_in_a_round, (result) =>
         {
             Debug.Log(result);
         });
@@ -239,9 +244,64 @@ public class ScoreManager : MonoBehaviour
 
         megScore += valueAdded;
         ShowFloatingText(ballPos, valueAdded);
-
-        //megScore += pointsPerMeg;
         scoreText.text = megScore.ToString();
+
+        if (megScore == 10)
+        {
+            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+            {
+                foreach (IAchievement thisAchievement in achievements)
+                {
+                    if (thisAchievement.id == GPGSIds.achievement_beginner && !thisAchievement.completed)
+                    {
+                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_beginner);
+                    }
+                    break;
+                }
+            });
+        }
+        else if (megScore == 25)
+        {
+            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+            {
+                foreach (IAchievement thisAchievement in achievements)
+                {
+                    if (thisAchievement.id == GPGSIds.achievement_intermediate && !thisAchievement.completed)
+                    {
+                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_intermediate);
+                    }
+                    break;
+                }
+            });
+        }
+        else if (megScore == 50)
+        {
+            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+            {
+                foreach (IAchievement thisAchievement in achievements)
+                {
+                    if (thisAchievement.id == GPGSIds.achievement_advanced && !thisAchievement.completed)
+                    {
+                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_advanced);
+                    }
+                    break;
+                }
+            });
+        }
+        else if (megScore == 100)
+        {
+            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+            {
+                foreach (IAchievement thisAchievement in achievements)
+                {
+                    if (thisAchievement.id == GPGSIds.achievement_master && !thisAchievement.completed)
+                    {
+                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_master);
+                    }
+                    break;
+                }
+            });
+        }
     }
 
     void ShowFloatingText(Vector3 ballPos, float pointsAdded)

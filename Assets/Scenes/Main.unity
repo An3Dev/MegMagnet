@@ -2269,10 +2269,12 @@ MonoBehaviour:
   highPresetBtn: {fileID: 1358852681}
   postProcessingToggle: {fileID: 1704176069}
   fpsGameObject: {fileID: 1479514604}
+  googlePlayImage: {fileID: 0}
   continueButton: {fileID: 661250455}
   scoreManager: {fileID: 1956511356}
   shopUI: {fileID: 1423046243}
   gameOverUI: {fileID: 514559913}
+  googlePlayGameInfo: {fileID: 0}
   inSettings: 0
   objectsToDisableInSettings:
   - {fileID: 1416720112}
@@ -6655,8 +6657,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 26.659973, y: -15.799988}
-  m_SizeDelta: {x: 60, y: 60}
+  m_AnchoredPosition: {x: 22.6, y: -12.47}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1416720114
 MonoBehaviour:
@@ -6678,10 +6680,10 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
+    m_PressedColor: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 1}
+    m_SelectedColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -6725,13 +6727,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f3e477fe53884c84eb735956739cf872, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9c2d4ac452fc494498d85c1ff6f335e9, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

@@ -11,6 +11,8 @@ using GooglePlayGames.Android;
 using GooglePlayGames;
 using UnityEngine.SocialPlatforms;
 using GooglePlayGames.BasicApi;
+using UnityEngine.UDP;
+
 public class MyGameManager : MonoBehaviour
 {
 
@@ -37,6 +39,8 @@ public class MyGameManager : MonoBehaviour
     public Toggle postProcessingToggle;
     public GameObject fpsGameObject;
 
+    public GameObject googlePlayImage;
+
     public GameObject continueButton;
 
     SROptions options;
@@ -58,6 +62,8 @@ public class MyGameManager : MonoBehaviour
 
     public GameObject gameOverUI;
 
+    public TextMeshProUGUI googlePlayGameInfo;
+
     const string graphicsPresetName = "GraphicsPresets";
     const string renderScaleName = "RenderScale";
     const string castShadowsName = "CastShadows";
@@ -69,21 +75,63 @@ public class MyGameManager : MonoBehaviour
 
     public GameObject[] objectsToDisableInSettings;
 
+    int totalMegs;
+    const string totalMegsKey = "TotalMegsKey";
+
+    int totalDoubleMegs;
+    const string totalDoubleMegsKey = "DoubleMegs";
     // Start is called before the first frame update
     void Start()
     {
-        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
-        PlayGamesPlatform.InitializeInstance(config);
-        // recommended for debugging:
-        PlayGamesPlatform.DebugLogEnabled = true;
-        // Activate the Google Play Games platform
-        PlayGamesPlatform.Activate();
-
-        PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (result) =>
+        totalMegs = PlayerPrefs.GetInt(totalMegsKey, 0);
+        totalDoubleMegs = PlayerPrefs.GetInt(totalDoubleMegsKey, 0);
+        if (PlayGamesPlatform.Instance == null)
         {
+            PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
+            PlayGamesPlatform.InitializeInstance(config);
 
-            Debug.Log(result);
-        });
+            // recommended for debugging:
+            PlayGamesPlatform.DebugLogEnabled = true;
+
+            // Activate the Google Play Games platform
+            PlayGamesPlatform.Activate();
+        }
+
+        if (!PlayGamesPlatform.Instance.IsAuthenticated())
+        {
+            PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (result) =>
+            {
+                if (result == SignInStatus.Failed)
+                {
+                    googlePlayGameInfo.text = "Sign-in failed";
+                }
+                else if (result == SignInStatus.Success)
+                {
+                    googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
+                }
+                else if (result == SignInStatus.NotAuthenticated)
+                {
+                    googlePlayGameInfo.text = "Not Authenticated";
+                }
+                else if (result == SignInStatus.UiSignInRequired)
+                {
+
+                    googlePlayGameInfo.text = "UI sign in required";
+                }
+                else if (result == SignInStatus.NetworkError)
+                {
+                    googlePlayGameInfo.text = "Network error";
+                }
+                else
+                {
+                    googlePlayGameInfo.text = result.ToString();
+                }
+                Debug.Log(result);
+            });
+        } else
+        {
+            googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
+        }
 
         Instance = this;
         mainCamera = Camera.main;
@@ -127,12 +175,65 @@ public class MyGameManager : MonoBehaviour
         }
     }
 
+    public void GooglePlaySignIn()
+    {
+        //Social.localUser.Authenticate((bool success) =>
+        //{
+        //   if (success)
+        //   {
+        //       googlePlayGameInfo.text = Social.localUser.userName;
+        //   } else
+        //   {
+        //       googlePlayGameInfo.text = "Failed";
+        //   }
+        //});
+        if (!PlayGamesPlatform.Instance.IsAuthenticated())
+        {
+            PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (result) =>
+            {
+                if (result == SignInStatus.Failed)
+                {
+                    googlePlayGameInfo.text = "Sign-in failed";
+                }
+                else if (result == SignInStatus.Success)
+                {
+                    googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
+                }
+                else if (result == SignInStatus.NotAuthenticated)
+                {
+                    googlePlayGameInfo.text = "Not Authenticated";
+                }
+                else if (result == SignInStatus.UiSignInRequired)
+                {
+
+                    googlePlayGameInfo.text = "UI sign in required";
+                }
+                else if (result == SignInStatus.NetworkError)
+                {
+                    googlePlayGameInfo.text = "Network error";
+                }
+                else
+                {
+                    googlePlayGameInfo.text = result.ToString();
+                }
+                Debug.Log(result);
+            });
+        }  else
+        {
+            // sign out
+            PlayGamesPlatform.Instance.SignOut();
+            googlePlayGameInfo.text = "Signed out";
+
+        }
+    }
+
     public void GoToMenu()
     {
         if (scoreManager)
         {
             scoreManager.SaveScore();
         }
+        SavePrefs();
 
         UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
@@ -141,6 +242,21 @@ public class MyGameManager : MonoBehaviour
     {
         postProcessing = enable;
         cameraData.renderPostProcessing = postProcessing;
+    }
+
+    public void ShowAchievements()
+    {
+        PlayGamesPlatform.Instance.ShowAchievementsUI();
+    }
+
+    public void IncreaseTotalMegsNum(bool doubleMeg)
+    {
+        totalMegs++;
+
+        if (doubleMeg)
+        {
+            totalDoubleMegs++;
+        }
     }
 
     public void EnableShopUI(bool enable)
@@ -177,13 +293,8 @@ public class MyGameManager : MonoBehaviour
         }
 
         renderScaleSlider.value = currentPipelineAsset.renderScale;
-        if (currentPipelineAsset.shadowDistance > 0)
-        {
-            shadowsToggle.isOn = true;
-        } else
-        {
-            shadowsToggle.isOn = false;
-        }
+
+        cameraData.renderShadows = castShadows;
 
         cameraData.renderPostProcessing = postProcessing;
         antiAliasingToggle.isOn = antiAliasing;
@@ -204,6 +315,10 @@ public class MyGameManager : MonoBehaviour
         {
             gameOverUI.SetActive(true);
             continueButton.SetActive(false);
+            if (scoreManager)
+            {
+                scoreManager.SaveScore();
+            }
         }
     }
 
@@ -276,13 +391,19 @@ public class MyGameManager : MonoBehaviour
         {
             scoreManager.SaveScore();
         }
+        SavePrefs();
+    }
+
+    public void SavePrefs()
+    {
+        PlayerPrefs.SetInt(totalMegsKey, totalMegs);
+        PlayerPrefs.SetInt(totalDoubleMegsKey, totalDoubleMegs);
+
     }
 
     public void OpenSettings(bool enable)
     {
         settingsPanel.SetActive(enable);
-
-
 
         for(int i = 0; i < objectsToDisableInSettings.Length; i++)
         {
@@ -299,7 +420,7 @@ public class MyGameManager : MonoBehaviour
         }
 
         // if shop is active
-        if (shopUI.activeInHierarchy && enable)
+        if (shopUI && shopUI.activeInHierarchy && enable)
         {
             shopUI.SetActive(false);
         }
