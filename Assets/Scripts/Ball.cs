@@ -14,7 +14,7 @@ public class Ball : MonoBehaviour
 
     bool megEnterTriggered = false;
 
-    public float fadeDuration;
+    float fadeDuration = 0.5f;
 
     bool fadeAway;
     float startTime;
@@ -25,8 +25,6 @@ public class Ball : MonoBehaviour
     public Vector3 startScale;
 
     bool wasKicked = false;
-
-    bool isCheckingForMeg = false;
 
     Transform leftFoot, rightFoot;
     Person person;

@@ -16,6 +16,8 @@ public class BallColorChange : MonoBehaviour
 
     float timer;
     bool changingColor = false;
+
+    bool visible;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,7 @@ public class BallColorChange : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         timer += Time.deltaTime;
 
         if (timer >= timeBeforeColorChange && !changingColor)

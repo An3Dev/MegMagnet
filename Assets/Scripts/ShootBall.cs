@@ -56,6 +56,18 @@ public class ShootBall : MonoBehaviour
     {
         gameManager = FindObjectOfType<MyGameManager>();
         ballPrefab = Resources.Load("Balls/" + PlayerPrefs.GetString(ShopScript.equippedBallKey, "Classic").ToString()) as GameObject;
+        if(ballPrefab.GetComponent<BallCost>())
+        {
+            ballPrefab.GetComponent<BallCost>().enabled = false;
+        }
+        if (!ballPrefab.GetComponent<MegDetection>())
+        {
+            ballPrefab.AddComponent<MegDetection>();
+        }
+        if (!ballPrefab.GetComponent<Ball>())
+        {
+            ballPrefab.AddComponent<Ball>();
+        }
         eventSystem = EventSystem.current;
     }
 

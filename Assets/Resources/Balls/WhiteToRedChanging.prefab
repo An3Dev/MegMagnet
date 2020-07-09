@@ -5389,6 +5389,8 @@ GameObject:
   - component: {fileID: 722609800298287034}
   - component: {fileID: 722609800298287013}
   - component: {fileID: 722609800298287032}
+  - component: {fileID: 2134982831644844202}
+  - component: {fileID: -2220390983437169434}
   m_Layer: 0
   m_Name: WhiteToRedChanging
   m_TagString: Untagged
@@ -5472,6 +5474,34 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   thisRenderer: {fileID: 722609798806504377}
+--- !u!114 &2134982831644844202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722609800298287015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486c73917c9d60c4f9d81e8b185b2ce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-2220390983437169434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722609800298287015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b249eb4edcea36840ae4883712b5b521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeDuration: 0.5
+  Instance: {fileID: 0}
+  startScale: {x: 0, y: 0, z: 0}
+  trail: {fileID: 0}
 --- !u!1 &722609800500301547
 GameObject:
   m_ObjectHideFlags: 0
