@@ -80,11 +80,23 @@ public class MyGameManager : MonoBehaviour
 
     int totalDoubleMegs;
     const string totalDoubleMegsKey = "DoubleMegs";
+
+    private void Awake()
+    {
+        graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "High");
+
+        renderScale = PlayerPrefs.GetFloat(renderScaleName, 1);
+        castShadows = bool.Parse(PlayerPrefs.GetString(castShadowsName, "true"));
+        antiAliasing = bool.Parse(PlayerPrefs.GetString(antiAliasingName, "true"));
+        showFPS = bool.Parse(PlayerPrefs.GetString(showFPSName, "false"));
+        postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "true"));
+    }
     // Start is called before the first frame update
     void Start()
     {
         totalMegs = PlayerPrefs.GetInt(totalMegsKey, 0);
         totalDoubleMegs = PlayerPrefs.GetInt(totalDoubleMegsKey, 0);
+#if UNITY_ANDROID
         if (PlayGamesPlatform.Instance == null)
         {
             PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
@@ -96,6 +108,7 @@ public class MyGameManager : MonoBehaviour
             // Activate the Google Play Games platform
             PlayGamesPlatform.Activate();
         }
+
 
         if (!PlayGamesPlatform.Instance.IsAuthenticated())
         {
@@ -132,19 +145,12 @@ public class MyGameManager : MonoBehaviour
         {
             googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
         }
-
+#endif
         Instance = this;
         mainCamera = Camera.main;
         cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
         currentPipelineAsset = UniversalRenderPipeline.asset;
-
-        graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "High");
-
-        renderScale = PlayerPrefs.GetFloat(renderScaleName, 1);
-        castShadows = bool.Parse(PlayerPrefs.GetString(castShadowsName, "true"));
-        antiAliasing = bool.Parse(PlayerPrefs.GetString(antiAliasingName, "true"));
-        showFPS = bool.Parse(PlayerPrefs.GetString(showFPSName, "false"));
-        postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "true"));
+        
 
         if (graphicsPreset == "Low")
         {
@@ -311,6 +317,8 @@ public class MyGameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Application.targetFrameRate = 120;
+        QualitySettings.vSyncCount = 0;
         if (gameOver)
         {
             gameOverUI.SetActive(true);

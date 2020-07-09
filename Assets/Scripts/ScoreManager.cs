@@ -64,6 +64,8 @@ public class ScoreManager : MonoBehaviour
         gameManager = FindObjectOfType<MyGameManager>();
         data = transform.gameObject.AddComponent<An3Apps.Data>();
         currency = PlayerPrefs.GetInt(ShopScript.playerCurrencyKey, 25);
+        //PlayerPrefs.DeleteKey(An3Apps.Data.highScoreKey);
+
     }
 
     void Start()
@@ -157,10 +159,18 @@ public class ScoreManager : MonoBehaviour
         //{
         //    Debug.Log(result);
         //});
-        PlayGamesPlatform.Instance.ReportScore(megScore, GPGSIds.leaderboard_most_megs_in_a_round, (result) =>
+        if (megScore > data.GetHighScore())
         {
-            Debug.Log(result);
-        });
+            data.SetHighScore(megScore);
+            Debug.Log(megScore);
+        }
+        if (PlayGamesPlatform.Instance.IsAuthenticated())
+        {
+            PlayGamesPlatform.Instance.ReportScore(megScore, GPGSIds.leaderboard_most_megs_in_a_round, (result) =>
+            {
+                Debug.Log(result);
+            });
+        }
     }
 
     public void StartGame()
@@ -246,62 +256,65 @@ public class ScoreManager : MonoBehaviour
         ShowFloatingText(ballPos, valueAdded);
         scoreText.text = megScore.ToString();
 
-        if (megScore == 10)
+        if (PlayGamesPlatform.Instance.IsAuthenticated())
         {
-            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+            if (megScore == 10)
             {
-                foreach (IAchievement thisAchievement in achievements)
+                PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
                 {
-                    if (thisAchievement.id == GPGSIds.achievement_beginner && !thisAchievement.completed)
+                    foreach (IAchievement thisAchievement in achievements)
                     {
-                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_beginner);
+                        if (thisAchievement.id == GPGSIds.achievement_beginner && !thisAchievement.completed)
+                        {
+                            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_beginner);
+                        }
+                        break;
                     }
-                    break;
-                }
-            });
-        }
-        else if (megScore == 25)
-        {
-            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+                });
+            }
+            else if (megScore == 25)
             {
-                foreach (IAchievement thisAchievement in achievements)
+                PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
                 {
-                    if (thisAchievement.id == GPGSIds.achievement_intermediate && !thisAchievement.completed)
+                    foreach (IAchievement thisAchievement in achievements)
                     {
-                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_intermediate);
+                        if (thisAchievement.id == GPGSIds.achievement_intermediate && !thisAchievement.completed)
+                        {
+                            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_intermediate);
+                        }
+                        break;
                     }
-                    break;
-                }
-            });
-        }
-        else if (megScore == 50)
-        {
-            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+                });
+            }
+            else if (megScore == 50)
             {
-                foreach (IAchievement thisAchievement in achievements)
+                PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
                 {
-                    if (thisAchievement.id == GPGSIds.achievement_advanced && !thisAchievement.completed)
+                    foreach (IAchievement thisAchievement in achievements)
                     {
-                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_advanced);
+                        if (thisAchievement.id == GPGSIds.achievement_advanced && !thisAchievement.completed)
+                        {
+                            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_advanced);
+                        }
+                        break;
                     }
-                    break;
-                }
-            });
-        }
-        else if (megScore == 100)
-        {
-            PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+                });
+            }
+            else if (megScore == 100)
             {
-                foreach (IAchievement thisAchievement in achievements)
+                PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
                 {
-                    if (thisAchievement.id == GPGSIds.achievement_master && !thisAchievement.completed)
+                    foreach (IAchievement thisAchievement in achievements)
                     {
-                        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_master);
+                        if (thisAchievement.id == GPGSIds.achievement_master && !thisAchievement.completed)
+                        {
+                            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_master);
+                        }
+                        break;
                     }
-                    break;
-                }
-            });
-        }
+                });
+            }
+        }      
     }
 
     void ShowFloatingText(Vector3 ballPos, float pointsAdded)

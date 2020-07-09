@@ -68,6 +68,11 @@ public class ShootBall : MonoBehaviour
         {
             ballPrefab.AddComponent<Ball>();
         }
+        if (ballPrefab.GetComponentInChildren<Canvas>())
+        {
+            ballPrefab.GetComponentInChildren<Canvas>().enabled = false;
+        }
+        ballPrefab.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         eventSystem = EventSystem.current;
     }
 

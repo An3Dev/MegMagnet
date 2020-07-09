@@ -34,8 +34,8 @@ public class ShopScript : MonoBehaviour
     {
         equippedBall = PlayerPrefs.GetString(equippedBallKey, "Classic");
         playerCurrency = PlayerPrefs.GetInt(playerCurrencyKey, 25);
-        //PlayerPrefs.DeleteAll();
-        //playerCurrency = 10000;
+
+        //PlayerPrefs.DeleteKey(ownedItemsKey);
 
         moneyText.text = playerCurrency.ToString();
         ownedItems = PlayerPrefs.GetString(ownedItemsKey, "Classic");
@@ -52,6 +52,16 @@ public class ShopScript : MonoBehaviour
         for(int i = 0; i < ballsList.Count(); i++)
         {
             GameObject ball = ballsList[i].gameObject;
+
+            Button buyButton = ball.transform.Find("Canvas/BuyButton").GetComponent<Button>();
+            Button equipButton = ball.transform.Find("Canvas/EquipButton").GetComponent<Button>();
+
+            buyButton.onClick.SetPersistentListenerState(0, UnityEngine.Events.UnityEventCallState.Off);
+            buyButton.onClick.AddListener(() => Buy(ball.name));
+
+            equipButton.onClick.SetPersistentListenerState(0, UnityEngine.Events.UnityEventCallState.Off);
+            equipButton.onClick.AddListener(() => Equip(ball.name));
+
             for (int x = 0; x < ownedItemsList.Count(); x++)
             {
                 // if this ball is owned
@@ -59,21 +69,21 @@ public class ShopScript : MonoBehaviour
                 {
                     // remove the buy button so that they don't buy it again
                     //ball.transform.Find("BuyButton").gameObject.SetActive(false);
-                    ball.transform.Find("Canvas/BuyButton").gameObject.SetActive(false);
+                    buyButton.gameObject.SetActive(false);
 
                     // if this ball is equipped
                     if (equippedBall == ball.name)
                     {
                         // disable the equip button
-                        ball.transform.Find("Canvas/EquipButton").gameObject.GetComponent<Button>().interactable = false;
-                        ball.transform.Find("Canvas/EquipButton/EquipText").gameObject.GetComponent<TextMeshProUGUI>().text = "Equipped";
+                        equipButton.gameObject.GetComponent<Button>().interactable = false;
+                        equipButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Equipped";
                     }
                 }
                 else // if this ball is not owned
                 {
                     //int cost = Mathf.RoundToInt(startingBallCost + i / numOfBallsBeforeCostIncrease * costIncrease);
                     int cost = ball.GetComponent<BallCost>().cost;
-                    ball.transform.Find("Canvas/BuyButton/BuyButtonText").GetComponent<TextMeshProUGUI>().text = cost.ToString();
+                    buyButton.GetComponentInChildren<TextMeshProUGUI>().text = cost.ToString();
                 }
             }
         }

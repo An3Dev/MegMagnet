@@ -21,15 +21,13 @@ public class BallColorChange : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        thisRenderer.materials[1].color = colors[0];
+        thisRenderer.materials[1].color = colors[Random.Range(0, colors.Length - 1)];
     }
 
     // Update is called once per frame
     void Update()
     {
-
         timer += Time.deltaTime;
-
         if (timer >= timeBeforeColorChange && !changingColor)
         {
             timer = 0;
@@ -62,5 +60,10 @@ public class BallColorChange : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
         StartCoroutine(ChangeColor(oldColor, targetColor));
+    }
+
+    private void OnDisable()
+    {
+        changingColor = false;
     }
 }

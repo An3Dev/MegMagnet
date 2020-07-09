@@ -7,7 +7,7 @@ namespace An3Apps
     public class Data : MonoBehaviour
     {
         private static int highScore;
-        private static string highScoreKey = "HighScore";
+        public static string highScoreKey = "HighScore";
 
         public static Data Instance;
         private void Awake()

@@ -111,10 +111,10 @@ public class Ball : MonoBehaviour
     public void HandleMeg()
     {
         numOfMegs++;
-
         gameManager.IncreaseTotalMegsNum(numOfMegs > 1);
 
-        if (numOfMegs == 2)
+#if UNITY_ANDROID
+        if (numOfMegs == 2 && PlayGamesPlatform.Instance.IsAuthenticated())
         {
             PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
             {
@@ -129,6 +129,7 @@ public class Ball : MonoBehaviour
             });
             
         }
+#endif
         if (numOfCollisions == 0)
         {
             scoreManager.UpdateScore(ScoreManager.MegType.Clean, numOfMegs, transform.position);
