@@ -2505,6 +2505,7 @@ MonoBehaviour:
   - {fileID: 1416720112}
   - {fileID: 212150708}
   adButton: {fileID: 476586783}
+  adButtonImage: {fileID: 476586786}
 --- !u!1 &512593824
 GameObject:
   m_ObjectHideFlags: 0

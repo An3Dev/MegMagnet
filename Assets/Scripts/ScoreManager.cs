@@ -26,7 +26,7 @@ public class ScoreManager : MonoBehaviour
 
     public Transform canvas;
 
-    int startTime = 5;
+    int startTime = 15;
     int startTimeDecrease = 1; // per meg
 
     float timeLeft = 10;

@@ -13,7 +13,7 @@ using UnityEngine.SocialPlatforms;
 using GooglePlayGames.BasicApi;
 using UnityEngine.UDP;
 using UnityEngine.Advertisements;
-public class MyGameManager : MonoBehaviour
+public class MyGameManager : MonoBehaviour, IUnityAdsListener
 {
 
     public bool play = false;
@@ -28,6 +28,8 @@ public class MyGameManager : MonoBehaviour
 
     public float timeScale;
 
+    private const string playStoreID = "3706691";
+    private const string rewardAdID = "rewardedVideo";
     UniversalRenderPipelineAsset currentPipelineAsset;
 
     public GameObject settingsPanel;
@@ -87,6 +89,10 @@ public class MyGameManager : MonoBehaviour
 
     bool showedAdThisRound = false;
 
+    public Image adButtonImage;
+    float timeForContinueGame = 20;
+    float adImageTimer = 0;
+
     private void Awake()
     {
         graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "High");
@@ -97,8 +103,6 @@ public class MyGameManager : MonoBehaviour
         showFPS = bool.Parse(PlayerPrefs.GetString(showFPSName, "false"));
         postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "true"));
 
-        Advertisement.Initialize("3706691");
-        Advertisement.Load("rewardedVideo");
     }
     // Start is called before the first frame update
     void Start()
@@ -118,6 +122,10 @@ public class MyGameManager : MonoBehaviour
             PlayGamesPlatform.Activate();
         }
 
+
+        Advertisement.Initialize(playStoreID);
+        Advertisement.Load(rewardAdID);
+        Advertisement.AddListener(this);
 
         if (!PlayGamesPlatform.Instance.IsAuthenticated())
         {
@@ -189,7 +197,7 @@ public class MyGameManager : MonoBehaviour
             cameraData.antialiasing = AntialiasingMode.None;
         }
     }
-
+    #region Google Play
     public void GooglePlaySignIn()
     {
         //Social.localUser.Authenticate((bool success) =>
@@ -241,6 +249,7 @@ public class MyGameManager : MonoBehaviour
 
         }
     }
+    #endregion GooglePlayGames
 
     public void GoToMenu()
     {
@@ -329,17 +338,14 @@ public class MyGameManager : MonoBehaviour
         Application.targetFrameRate = 120;
         QualitySettings.vSyncCount = 0;
 
-        if (showingAd)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Time.timeScale = 1;
-                showingAd = false;
-            }
-        }
-
         if (gameOver)
         {
+            adImageTimer += Time.unscaledDeltaTime;
+            adButtonImage.fillAmount = 1 - (adImageTimer / timeForContinueGame);
+            if (adButtonImage.fillAmount <= 0)
+            {
+                adButton.SetActive(false);
+            }
             if (!showedAdThisRound)
             {
                 adButton.SetActive(true);
@@ -372,6 +378,7 @@ public class MyGameManager : MonoBehaviour
         currentPipelineAsset.renderScale = value;
     }
 
+    #region Ads
     public void ShowVideoAd()
     {
         
@@ -379,12 +386,14 @@ public class MyGameManager : MonoBehaviour
 
     public void ShowRewardAd()
     {
-        //if (Advertisement.IsReady("rewardedVideo"))
-        //{
+        if (Advertisement.IsReady("rewardedVideo"))
+        {
+            //Advertisement.AddListener();
             Advertisement.Show("rewardedVideo");
             showingAd = true;
             showedAdThisRound = true;
-        //}
+        }      
+
 
         gameOver = false;
         gameOverUI.SetActive(false);
@@ -393,6 +402,39 @@ public class MyGameManager : MonoBehaviour
         scoreManager.ResetTime();
         Time.timeScale = 0;
     }
+
+    public void OnUnityAdsReady(string placementId)
+    {
+    }
+
+    public void OnUnityAdsDidError(string message)
+    {
+        
+    }
+
+    public void OnUnityAdsDidStart(string placementId)
+    {
+        // mute Unity Audio
+    }
+
+    public void OnUnityAdsDidFinish(string placementId, ShowResult showResult)
+    {
+        switch(showResult)
+        {
+            case ShowResult.Failed:
+                break;
+
+            case ShowResult.Finished:
+                Time.timeScale = 1;
+                showingAd = false;
+                // unmute audio
+                break;
+
+            case ShowResult.Skipped:
+                break;
+        }
+    }
+    #endregion Ads
 
     public void ChangePresetSetting(int index)
     {
@@ -509,4 +551,6 @@ public class MyGameManager : MonoBehaviour
         play = true;
         showedAdThisRound = false;
     }
+
+    
 }
