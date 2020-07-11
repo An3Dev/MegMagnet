@@ -12,7 +12,7 @@ using GooglePlayGames;
 using UnityEngine.SocialPlatforms;
 using GooglePlayGames.BasicApi;
 using UnityEngine.UDP;
-
+using UnityEngine.Advertisements;
 public class MyGameManager : MonoBehaviour
 {
 
@@ -44,6 +44,8 @@ public class MyGameManager : MonoBehaviour
     public GameObject continueButton;
 
     SROptions options;
+
+    public bool showingAd = false;
 
     float renderScale;
     bool castShadows;
@@ -81,6 +83,10 @@ public class MyGameManager : MonoBehaviour
     int totalDoubleMegs;
     const string totalDoubleMegsKey = "DoubleMegs";
 
+    public GameObject adButton;
+
+    bool showedAdThisRound = false;
+
     private void Awake()
     {
         graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "High");
@@ -90,6 +96,9 @@ public class MyGameManager : MonoBehaviour
         antiAliasing = bool.Parse(PlayerPrefs.GetString(antiAliasingName, "true"));
         showFPS = bool.Parse(PlayerPrefs.GetString(showFPSName, "false"));
         postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "true"));
+
+        Advertisement.Initialize("3706691");
+        Advertisement.Load("rewardedVideo");
     }
     // Start is called before the first frame update
     void Start()
@@ -319,8 +328,27 @@ public class MyGameManager : MonoBehaviour
     {
         Application.targetFrameRate = 120;
         QualitySettings.vSyncCount = 0;
+
+        if (showingAd)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Time.timeScale = 1;
+                showingAd = false;
+            }
+        }
+
         if (gameOver)
         {
+            if (!showedAdThisRound)
+            {
+                adButton.SetActive(true);
+                
+            } else
+            {
+                adButton.SetActive(false);
+            }
+
             gameOverUI.SetActive(true);
             continueButton.SetActive(false);
             if (scoreManager)
@@ -342,6 +370,28 @@ public class MyGameManager : MonoBehaviour
     {
         renderScale = value;
         currentPipelineAsset.renderScale = value;
+    }
+
+    public void ShowVideoAd()
+    {
+        
+    }
+
+    public void ShowRewardAd()
+    {
+        //if (Advertisement.IsReady("rewardedVideo"))
+        //{
+            Advertisement.Show("rewardedVideo");
+            showingAd = true;
+            showedAdThisRound = true;
+        //}
+
+        gameOver = false;
+        gameOverUI.SetActive(false);
+        play = true;
+        gameOverUI.SetActive(false);
+        scoreManager.ResetTime();
+        Time.timeScale = 0;
     }
 
     public void ChangePresetSetting(int index)
@@ -395,6 +445,7 @@ public class MyGameManager : MonoBehaviour
         gameOverUI.SetActive(true);
         inSettings = true;
         continueButton.SetActive(true);
+        adButton.SetActive(false);
         if (scoreManager)
         {
             scoreManager.SaveScore();
@@ -456,5 +507,6 @@ public class MyGameManager : MonoBehaviour
     public void StartTime()
     {
         play = true;
+        showedAdThisRound = false;
     }
 }

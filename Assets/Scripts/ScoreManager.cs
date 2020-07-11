@@ -6,6 +6,7 @@ using TMPro;
 using An3Apps;
 using GooglePlayGames;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.Advertisements;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -25,7 +26,7 @@ public class ScoreManager : MonoBehaviour
 
     public Transform canvas;
 
-    int startTime = 15;
+    int startTime = 5;
     int startTimeDecrease = 1; // per meg
 
     float timeLeft = 10;
@@ -79,6 +80,11 @@ public class ScoreManager : MonoBehaviour
         ResetGame();
     }
 
+    public void Continue()
+    {
+        timeLeft = minimumResetTime + 2;
+    }
+
     public void SetGameOverScreenUI ()
     {
         // if player beat their high score
@@ -108,6 +114,7 @@ public class ScoreManager : MonoBehaviour
             SetGameOverScreenUI();
             SaveScore();
         }
+
         // continuously update just in case a ball goes through legs while in the game over screen
         if (gameManager.gameOver || !gameManager.play)
         {
@@ -115,7 +122,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         if (!gameManager.play) return;
-
+        if (gameManager.showingAd) return;
         timeLeft -= Time.deltaTime;
 
         //float number = Mathf.Round(timeLeft * 100f) / 100f % 1;
@@ -178,6 +185,8 @@ public class ScoreManager : MonoBehaviour
         gameplayUI.SetActive(true);
         startUI.SetActive(false);
         gameOverUI.SetActive(false);
+
+        Advertisement.Load("rewardedVideo");
 
         ResetGame();
     }
