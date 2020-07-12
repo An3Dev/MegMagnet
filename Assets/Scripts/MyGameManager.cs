@@ -400,6 +400,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
         play = true;
         gameOverUI.SetActive(false);
         scoreManager.ResetTime();
+        adImageTimer = 0;
         Time.timeScale = 0;
     }
 
@@ -409,7 +410,8 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
 
     public void OnUnityAdsDidError(string message)
     {
-        
+        Time.timeScale = 1;
+        showingAd = false;
     }
 
     public void OnUnityAdsDidStart(string placementId)
@@ -550,6 +552,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     {
         play = true;
         showedAdThisRound = false;
+        adImageTimer = 0;
     }
 
     
