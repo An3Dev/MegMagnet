@@ -34,7 +34,7 @@ public class Person : MonoBehaviour
 
     public GameObject doubleMegObject;
 
-    float percentChanceOfAttacking = 0.1f;
+    float percentChanceOfAttacking = 0.5f;
 
     bool attackWhenHit = false;
 

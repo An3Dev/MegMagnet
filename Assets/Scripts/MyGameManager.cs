@@ -257,6 +257,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
         {
             scoreManager.SaveScore();
         }
+        Time.timeScale = 1;
         SavePrefs();
 
         UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
@@ -283,6 +284,10 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
         }
     }
 
+    public void OnClickRateUs()
+    {
+        Application.OpenURL("https://play.google.com/store/apps/details?id=" + "an3apps.megmadness");
+    }
     public void EnableShopUI(bool enable)
     {
         if (scoreManager)
@@ -299,6 +304,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     public void StartGame()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
+        Time.timeScale = 1;
     }
 
     void UpdateUI()
@@ -335,9 +341,6 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     // Update is called once per frame
     void Update()
     {
-        Application.targetFrameRate = 120;
-        QualitySettings.vSyncCount = 0;
-
         if (gameOver)
         {
             if (Advertisement.IsReady(rewardAdID))

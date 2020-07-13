@@ -267,6 +267,20 @@ public class ScoreManager : MonoBehaviour
 
         if (PlayGamesPlatform.Instance.IsAuthenticated())
         {
+            if (valueAdded == 2)
+            {
+                PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
+                {
+                    foreach (IAchievement thisAchievement in achievements)
+                    {
+                        if (thisAchievement.id == GPGSIds.achievement_double_meg && !thisAchievement.completed)
+                        {
+                            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_double_meg);
+                        }
+                        break;
+                    }
+                });
+            }
             if (megScore == 10)
             {
                 PlayGamesPlatform.Instance.LoadAchievements((achievements) =>
