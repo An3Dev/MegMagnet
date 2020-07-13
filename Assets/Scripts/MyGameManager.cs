@@ -340,20 +340,26 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
 
         if (gameOver)
         {
-            adImageTimer += Time.unscaledDeltaTime;
-            adButtonImage.fillAmount = 1 - (adImageTimer / timeForContinueGame);
-            if (adButtonImage.fillAmount <= 0)
+            if (Advertisement.IsReady(rewardAdID))
             {
-                adButton.SetActive(false);
-            }
-            if (!showedAdThisRound)
-            {
-                adButton.SetActive(true);
-                
+                adImageTimer += Time.unscaledDeltaTime;
+                adButtonImage.fillAmount = 1 - (adImageTimer / timeForContinueGame);
+                if (adButtonImage.fillAmount <= 0)
+                {
+                    adButton.SetActive(false);
+                }
+                if (!showedAdThisRound)
+                {
+                    adButton.SetActive(true);
+                }
+                else
+                {
+                    adButton.SetActive(false);
+                }
             } else
             {
                 adButton.SetActive(false);
-            }
+            }         
 
             gameOverUI.SetActive(true);
             continueButton.SetActive(false);
