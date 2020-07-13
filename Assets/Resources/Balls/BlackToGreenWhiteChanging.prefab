@@ -5660,7 +5660,7 @@ GameObject:
   - component: {fileID: 2714779521628275183}
   m_Layer: 0
   m_Name: BlackToGreenWhiteChanging
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5765,7 +5765,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b249eb4edcea36840ae4883712b5b521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeDuration: 0.5
   Instance: {fileID: 0}
   startScale: {x: 0, y: 0, z: 0}
   trail: {fileID: 0}

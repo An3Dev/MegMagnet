@@ -2,7 +2,7 @@
 
 public class Person : MonoBehaviour
 {
-    public float speed;
+    float speed = 2;
     public Rigidbody rb;
     Vector3 startingPosition;
     public BoxCollider megStart;
@@ -34,17 +34,24 @@ public class Person : MonoBehaviour
 
     public GameObject doubleMegObject;
 
+    float percentChanceOfAttacking = 0.1f;
+
+    bool attackWhenHit = false;
+
+    MyGameManager manager;
+
+    bool slapping = false;
     private void Awake()
     {
         startingPosition = transform.position;
         personRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
+        manager = FindObjectOfType<MyGameManager>();
         //animationComponent = GetComponentInChildren<Animation>();
 
         // You can re-use this block between calls rather than constructing a new one each time.
         block = new MaterialPropertyBlock();
 
-        // You can cache a reference to the renderer to avoid searching for it.
         personRenderer.SetPropertyBlock(block);
     }
 
@@ -61,10 +68,12 @@ public class Person : MonoBehaviour
 
     public void SetPerson()
     {
+        speed = 2;
         mainCamera = Camera.main;
         Instance = this;
         EnableRagdoll(false, transform);
 
+        attackWhenHit = Random.Range(0f, 100f) <= percentChanceOfAttacking;
         startingMaterials = personRenderer.materials;
 
         ChangeMaterials();
@@ -225,7 +234,7 @@ public class Person : MonoBehaviour
         for (int i = 0; i < parent.childCount; i++)
         {
             Transform child = parent.GetChild(i);
-            
+
 
             if (child.GetComponent<Rigidbody>() != null)
             {
@@ -242,8 +251,38 @@ public class Person : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (attackWhenHit && collision.collider.CompareTag("Ball"))
+        {
+            //speed = 0;
+            Vector3 offset = (mainCamera.transform.position - transform.position);
+            offset.y = transform.position.y;
+            transform.forward = (mainCamera.transform.position - transform.position).normalized;
+            slapping = true;
+        }
+    }
+
+    void Slap()
+    {
+        animator.SetTrigger("Slap");
+        Debug.Log("Slap");
+
+        Invoke("EndGame", 0.8f);
+    }
+
+    void EndGame()
+    {
+        manager.gameOver = true;
+        slapping = false;
+    }
+
     private void FixedUpdate()
     {
-        rb.velocity = transform.forward * 2;
+        if (slapping && (transform.position - mainCamera.transform.position).sqrMagnitude < 6)
+        {
+            Slap();
+        }
+        rb.velocity = transform.forward * speed;
     }
 }

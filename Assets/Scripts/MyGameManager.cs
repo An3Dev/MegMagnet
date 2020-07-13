@@ -494,6 +494,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
         play = false;
         gameOverUI.SetActive(true);
         inSettings = true;
+        Time.timeScale = 0.01f;
         continueButton.SetActive(true);
         adButton.SetActive(false);
         if (scoreManager)
@@ -556,7 +557,10 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
 
     public void StartTime()
     {
+        gameOverUI.SetActive(false);
+        inSettings = false;
         play = true;
+        Time.timeScale = 1;
         showedAdThisRound = false;
         adImageTimer = 0;
     }

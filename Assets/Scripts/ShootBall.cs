@@ -149,7 +149,7 @@ public class ShootBall : MonoBehaviour
         }
 
         // if clicked for first time
-        if (Input.GetMouseButtonDown(0) && !gameManager.settingsPanel.activeInHierarchy && !gameManager.inSettings)
+        if (Input.GetMouseButtonDown(0) && !gameManager.settingsPanel.activeInHierarchy && !gameManager.gameOverUI.activeInHierarchy && !gameManager.inSettings)
         {
             firstTouchTime = Time.timeSinceLevelLoad;
             firstTouchPos = Input.mousePosition;
@@ -160,7 +160,7 @@ public class ShootBall : MonoBehaviour
             firstTouchPos = Input.mousePosition;
         }
 
-        if (Input.GetMouseButton(0) && !gameManager.settingsPanel.activeInHierarchy && Time.timeScale > 0.2f)
+        if (Input.GetMouseButton(0) && !gameManager.settingsPanel.activeInHierarchy && !gameManager.gameOverUI.activeInHierarchy && Time.timeScale > 0.2f)
         {
             Vector3 direction = (Input.mousePosition - firstTouchPos).normalized;
             Vector3 flatDirection = new Vector3(direction.x, 0, direction.y);

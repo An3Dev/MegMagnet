@@ -750,7 +750,7 @@ GameObject:
   - component: {fileID: -6486645915098967039}
   m_Layer: 0
   m_Name: BlackRainbow
-  m_TagString: Untagged
+  m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
