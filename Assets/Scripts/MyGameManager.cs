@@ -40,6 +40,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     public Button lowPresetBtn, mediumPresetBtn, highPresetBtn;
     public Toggle postProcessingToggle;
     public GameObject fpsGameObject;
+    public Toggle fpsToggle;
 
     public GameObject googlePlayImage;
 
@@ -93,100 +94,111 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     float timeForContinueGame = 20;
     float adImageTimer = 0;
 
-    private void Awake()
+    private void OnEnable()
     {
-        graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "High");
+        graphicsPreset = PlayerPrefs.GetString(graphicsPresetName, "Medium");
 
         renderScale = PlayerPrefs.GetFloat(renderScaleName, 1);
         castShadows = bool.Parse(PlayerPrefs.GetString(castShadowsName, "true"));
-        antiAliasing = bool.Parse(PlayerPrefs.GetString(antiAliasingName, "true"));
+        antiAliasing = bool.Parse(PlayerPrefs.GetString(antiAliasingName, "false"));
         showFPS = bool.Parse(PlayerPrefs.GetString(showFPSName, "false"));
-        postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "true"));
+        postProcessing = bool.Parse(PlayerPrefs.GetString(postProcessingName, "false"));
 
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
         totalMegs = PlayerPrefs.GetInt(totalMegsKey, 0);
         totalDoubleMegs = PlayerPrefs.GetInt(totalDoubleMegsKey, 0);
-#if UNITY_ANDROID
-        if (PlayGamesPlatform.Instance == null)
+
+        if (Application.platform == RuntimePlatform.Android)
         {
-            PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
-            PlayGamesPlatform.InitializeInstance(config);
-
-            // recommended for debugging:
-            PlayGamesPlatform.DebugLogEnabled = true;
-
-            // Activate the Google Play Games platform
-            PlayGamesPlatform.Activate();
-        }
-
-
-        Advertisement.Initialize(playStoreID);
-        Advertisement.Load(rewardAdID);
-        Advertisement.AddListener(this);
-
-        if (!PlayGamesPlatform.Instance.IsAuthenticated())
-        {
-            PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (result) =>
+            if (PlayGamesPlatform.Instance == null)
             {
-                if (result == SignInStatus.Failed)
-                {
-                    googlePlayGameInfo.text = "Sign-in failed";
-                }
-                else if (result == SignInStatus.Success)
-                {
-                    googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
-                }
-                else if (result == SignInStatus.NotAuthenticated)
-                {
-                    googlePlayGameInfo.text = "Not Authenticated";
-                }
-                else if (result == SignInStatus.UiSignInRequired)
-                {
+                PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
+                PlayGamesPlatform.InitializeInstance(config);
 
-                    googlePlayGameInfo.text = "UI sign in required";
-                }
-                else if (result == SignInStatus.NetworkError)
+                // recommended for debugging:
+                PlayGamesPlatform.DebugLogEnabled = true;
+
+                // Activate the Google Play Games platform
+                PlayGamesPlatform.Activate();
+            }
+
+
+            Advertisement.Initialize(playStoreID);
+            Advertisement.Load(rewardAdID);
+            Advertisement.AddListener(this);
+
+            if (!PlayGamesPlatform.Instance.IsAuthenticated())
+            {
+                PlayGamesPlatform.Instance.Authenticate(SignInInteractivity.CanPromptAlways, (result) =>
                 {
-                    googlePlayGameInfo.text = "Network error";
-                }
-                else
-                {
-                    googlePlayGameInfo.text = result.ToString();
-                }
-                Debug.Log(result);
-            });
-        } else
-        {
-            googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
-        }
-#endif
+                    if (result == SignInStatus.Failed)
+                    {
+                        googlePlayGameInfo.text = "Sign-in failed";
+                    }
+                    else if (result == SignInStatus.Success)
+                    {
+                        googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
+                    }
+                    else if (result == SignInStatus.NotAuthenticated)
+                    {
+                        googlePlayGameInfo.text = "Not Authenticated";
+                    }
+                    else if (result == SignInStatus.UiSignInRequired)
+                    {
+
+                        googlePlayGameInfo.text = "UI sign in required";
+                    }
+                    else if (result == SignInStatus.NetworkError)
+                    {
+                        googlePlayGameInfo.text = "Network error";
+                    }
+                    else
+                    {
+                        googlePlayGameInfo.text = result.ToString();
+                    }
+                    Debug.Log(result);
+                });
+            }
+            else
+            {
+                googlePlayGameInfo.text = PlayGamesPlatform.Instance.localUser.userName;
+            }
+        }       
+
         Instance = this;
         mainCamera = Camera.main;
-        cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
+        cameraData = mainCamera.GetUniversalAdditionalCameraData();
+
         currentPipelineAsset = UniversalRenderPipeline.asset;
-        
 
         if (graphicsPreset == "Low")
         {
             QualitySettings.SetQualityLevel(0);
-        } else if (graphicsPreset == "Medium")
+        }
+        else if (graphicsPreset == "Medium")
         {
             QualitySettings.SetQualityLevel(1);
-        } else if (graphicsPreset == "High")
+        }
+        else if (graphicsPreset == "High")
         {
             QualitySettings.SetQualityLevel(2);
         }
 
         currentPipelineAsset = UniversalRenderPipeline.asset;
 
+        Debug.Log("Start");
         currentPipelineAsset.renderScale = renderScale;
+
+        if (cameraData == null)
+        {
+            cameraData = mainCamera.GetUniversalAdditionalCameraData();
+
+        }
 
         cameraData.renderShadows = castShadows;
 
         cameraData.renderPostProcessing = postProcessing;
+
+        fpsGameObject.SetActive(showFPS);
 
         if (antiAliasing)
         {
@@ -197,6 +209,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
             cameraData.antialiasing = AntialiasingMode.None;
         }
     }
+
     #region Google Play
     public void GooglePlaySignIn()
     {
@@ -263,11 +276,6 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
         UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
     }
 
-    public void EnablePostProcessing(bool enable)
-    {
-        postProcessing = enable;
-        cameraData.renderPostProcessing = postProcessing;
-    }
 
     public void ShowAchievements()
     {
@@ -292,6 +300,7 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     {
         if (scoreManager)
             scoreManager.ResetGame();
+
         //play = !enable;
         //shopUI.SetActive(enable);
         //gameOverUI.SetActive(!enable);
@@ -305,37 +314,6 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("Main");
         Time.timeScale = 1;
-    }
-
-    void UpdateUI()
-    {
-        if (graphicsPreset == "Low")
-        {
-            lowPresetBtn.Select();
-        }
-        else if (graphicsPreset == "Medium")
-        {
-            mediumPresetBtn.Select();
-        }
-        else if (graphicsPreset == "High")
-        {
-            highPresetBtn.Select();
-        }
-
-        renderScaleSlider.value = currentPipelineAsset.renderScale;
-
-        cameraData.renderShadows = castShadows;
-
-        cameraData.renderPostProcessing = postProcessing;
-        antiAliasingToggle.isOn = antiAliasing;
-
-        fpsGameObject.SetActive(showFPS);
-    }
-
-    public void ToggleFPS(bool enable)
-    {
-        fpsGameObject.SetActive(enable);
-        showFPS = enable;
     }
 
     // Update is called once per frame
@@ -381,11 +359,6 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
         Time.timeScale = 1;
     }
 
-    public void ChangeRenderScale(float value)
-    {
-        renderScale = value;
-        currentPipelineAsset.renderScale = value;
-    }
 
     #region Ads
     public void ShowVideoAd()
@@ -447,9 +420,57 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     }
     #endregion Ads
 
+
+    #region Settings
+    void UpdateSettingsUI()
+    {
+        if (graphicsPreset == "Low")
+        {
+            lowPresetBtn.Select();
+        }
+        else if (graphicsPreset == "Medium")
+        {
+            mediumPresetBtn.Select();
+        }
+        else if (graphicsPreset == "High")
+        {
+            highPresetBtn.Select();
+        }
+
+        renderScaleSlider.value = currentPipelineAsset.renderScale;
+
+        shadowsToggle.isOn = castShadows;
+
+        postProcessingToggle.isOn = postProcessing;
+
+        antiAliasingToggle.isOn = antiAliasing;
+
+        fpsToggle.isOn = showFPS;
+    }
+
+    public void ToggleFPS(bool enable)
+    {
+        fpsGameObject.SetActive(enable);
+        showFPS = enable;
+    }
+    public void ChangeRenderScale(float value)
+    {
+        renderScale = value;
+        if (currentPipelineAsset == null)
+        {
+            currentPipelineAsset = UniversalRenderPipeline.asset;
+        }
+        currentPipelineAsset.renderScale = value;
+    }
+
     public void ChangePresetSetting(int index)
     {
         QualitySettings.SetQualityLevel(index);
+        if (currentPipelineAsset == null)
+        {
+            currentPipelineAsset = UniversalRenderPipeline.asset;
+        }
+
         currentPipelineAsset = UniversalRenderPipeline.asset;
 
         if (index == 0)
@@ -463,18 +484,36 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
             graphicsPreset = "High";
         }
 
-        UpdateUI();
+        UpdateSettingsUI();
+    }
+
+    public void EnablePostProcessing(bool enable)
+    {
+        postProcessing = enable;
+        if(cameraData == null)
+        {
+            cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
+        }
+        cameraData.renderPostProcessing = postProcessing;
     }
 
     public void ToggleShadows(bool enable)
     {
         castShadows = enable;
+        if (cameraData == null)
+        {
+            cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
+        }
         cameraData.renderShadows = enable;
     }
 
     public void ToggleAntiAliasing(bool enable)
     {
         antiAliasing = enable;
+        if (cameraData == null)
+        {
+            cameraData = mainCamera.GetComponent<UniversalAdditionalCameraData>();
+        }
         if (enable)
         {
             cameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
@@ -489,8 +528,64 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     {
         ShadowResolution resolution = (ShadowResolution) Enum.Parse(Type.GetType(typeof(ShadowResolution).Name), "test");
         options.MainLightShadowResolution = resolution;
-        UpdateUI();    
+        UpdateSettingsUI();    
     }
+   
+    public void OpenSettings(bool enable)
+    {
+        // enable settings panel at start
+        if (enable)
+        {
+            settingsPanel.SetActive(enable);
+        }
+
+        for (int i = 0; i < objectsToDisableInSettings.Length; i++)
+        {
+            objectsToDisableInSettings[i].SetActive(!enable);
+        }
+
+        inSettings = enable;
+        if (enable)
+        {
+            Time.timeScale = 0.01f;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+
+        // if shop is active
+        if (shopUI && shopUI.activeInHierarchy && enable)
+        {
+            shopUI.SetActive(false);
+        }
+
+        if (!enable)
+        {
+            PlayerPrefs.SetString(graphicsPresetName, graphicsPreset);
+
+            PlayerPrefs.SetFloat(renderScaleName, renderScale);
+            PlayerPrefs.SetString(castShadowsName, castShadows.ToString());
+            PlayerPrefs.SetString(antiAliasingName, antiAliasing.ToString());
+            PlayerPrefs.SetString(showFPSName, showFPS.ToString());
+            PlayerPrefs.SetString(postProcessingName, postProcessing.ToString());
+
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            UpdateSettingsUI();
+        }
+
+        // disable settings panel at the end
+        if (!enable)
+        {
+            settingsPanel.SetActive(enable);
+        }
+    }
+
+    #endregion Settings
+
 
     public void StopGame()
     {
@@ -511,47 +606,9 @@ public class MyGameManager : MonoBehaviour, IUnityAdsListener
     {
         PlayerPrefs.SetInt(totalMegsKey, totalMegs);
         PlayerPrefs.SetInt(totalDoubleMegsKey, totalDoubleMegs);
-
     }
 
-    public void OpenSettings(bool enable)
-    {
-        settingsPanel.SetActive(enable);
 
-        for(int i = 0; i < objectsToDisableInSettings.Length; i++)
-        {
-            objectsToDisableInSettings[i].SetActive(!enable);
-        }
-        
-        inSettings = enable;
-        if (enable)
-        {
-            Time.timeScale = 0.01f;
-        } else
-        {
-            Time.timeScale = 1;
-        }
-
-        // if shop is active
-        if (shopUI && shopUI.activeInHierarchy && enable)
-        {
-            shopUI.SetActive(false);
-        }
-
-        if (!enable)
-        {
-            PlayerPrefs.SetString("GraphicsPresets", graphicsPreset);
-
-            PlayerPrefs.SetFloat(renderScaleName, renderScale);
-            PlayerPrefs.SetString(castShadowsName, castShadows.ToString());
-            PlayerPrefs.SetString(antiAliasingName, antiAliasing.ToString());
-            PlayerPrefs.SetString(showFPSName, showFPS.ToString());
-            PlayerPrefs.SetString(postProcessingName, postProcessing.ToString());
-        } else
-        {
-            UpdateUI();
-        }     
-    }
 
     public void ShowLeaderboardUI()
     {
